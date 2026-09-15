@@ -1,0 +1,812 @@
+.desktop-navigation,
+.desktop-header-title,
+.desktop-header-date,
+.desktop-auth-story,
+.desktop-auth-welcome,
+.desktop-shortcut,
+.desktop-eyebrow,
+.desktop-timesheet-columns {
+  display: none;
+}
+.desktop-page-heading h1 {
+  font-size: 24px;
+  margin: 0 0 18px;
+}
+.desktop-page-heading p {
+  display: none;
+}
+@media (min-width: 900px) {
+  body {
+    background: #f5f6f8;
+  }
+  .mobile-web-app,
+  .mobile-web-app.admin-workspace {
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    grid-template-rows: 80px 1fr;
+    max-width: none;
+    min-height: 100dvh;
+    padding: 0;
+    margin: 0;
+    background: #f5f6f8;
+  }
+  .desktop-navigation {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 236px;
+    background: #0b1218;
+    color: #fff;
+    z-index: 30;
+  }
+  .desktop-brand {
+    padding: 32px 24px 28px;
+    border-bottom: 1px solid #ffffff12;
+  }
+  .desktop-brand .brand-lockup {
+    gap: 12px;
+  }
+  .desktop-brand .brand-lockup span,
+  .desktop-brand .brand-lockup b {
+    font-size: 23px;
+    font-weight: 900;
+    line-height: 0.94;
+  }
+  .desktop-brand p {
+    color: #a7adb7;
+    font-size: 8px;
+    letter-spacing: 1.2px;
+    margin-top: 20px;
+    white-space: nowrap;
+  }
+  .desktop-nav-label {
+    color: #8f98a3;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    padding: 28px 24px 12px;
+    font-weight: 700;
+  }
+  .desktop-navigation nav {
+    padding: 0 12px;
+    display: grid;
+    gap: 5px;
+  }
+  .desktop-navigation nav button {
+    background: transparent;
+    color: #c7cdd4;
+    min-height: 46px;
+    border-radius: 7px;
+    justify-content: flex-start;
+    padding: 0 14px;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+  }
+  .desktop-navigation nav button:hover {
+    background: #ffffff0b;
+    color: #fff;
+  }
+  .desktop-navigation nav button.active {
+    background: #980d38;
+    color: #fff;
+    font-weight: 650;
+  }
+  .desktop-navigation nav button:nth-child(4) {
+    margin-top: 16px;
+  }
+  .desktop-nav-footer {
+    margin-top: auto;
+    padding: 24px 20px;
+    border-top: 1px solid #ffffff12;
+  }
+  .desktop-account {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .desktop-account > span {
+    width: 36px;
+    height: 36px;
+    background: #3b202f;
+    color: #f4cad9;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .desktop-account > div {
+    display: grid;
+    gap: 3px;
+  }
+  .desktop-account strong {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .desktop-account small {
+    color: #9aa4ae;
+    font-size: 11px;
+  }
+  .desktop-nav-footer > button {
+    background: transparent;
+    color: #aeb6bf;
+    min-height: 32px;
+    padding: 0;
+    font-size: 12px;
+    margin-top: 18px;
+  }
+  .mobile-web-header {
+    grid-column: 2;
+    grid-row: 1;
+    background: #fff;
+    color: #15212f;
+    border-bottom: 1px solid #e7e9ed;
+    min-height: 80px;
+    padding: 0 40px;
+    display: flex;
+    gap: 20px;
+  }
+  .mobile-web-header > .brand-lockup {
+    display: none;
+  }
+  .desktop-header-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+  }
+  .desktop-header-title span {
+    color: #7c8593;
+  }
+  .desktop-header-title strong {
+    font-size: 13px;
+    font-weight: 600;
+    padding-left: 16px;
+    border-left: 1px solid #e1e5ea;
+  }
+  .desktop-header-date {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #707b89;
+    font-size: 12px;
+  }
+  .mobile-web-avatar {
+    color: #980d38;
+    background: #f8eaf0;
+    width: 36px;
+    min-height: 36px;
+  }
+  .desktop-workspace {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    width: 100%;
+    max-width: 1480px;
+    padding: 32px 40px 48px;
+    margin: 0 auto;
+  }
+  .mobile-web-tabs,
+  .mobile-admin-tools {
+    display: none;
+  }
+  .mobile-web-content,
+  .mobile-web-app .dashboard-page,
+  .mobile-web-app .page {
+    padding: 0;
+  }
+  .mobile-web-app h1,
+  .desktop-page-heading h1 {
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: -0.7px;
+    font-weight: 750;
+  }
+  .desktop-eyebrow {
+    display: block;
+    color: #9a173f;
+    font-size: 10px;
+    letter-spacing: 1.7px;
+    font-weight: 750;
+    margin-bottom: 10px;
+  }
+  .desktop-page-heading {
+    margin-bottom: 28px;
+  }
+  .desktop-page-heading h1 {
+    margin-bottom: 10px;
+  }
+  .desktop-page-heading p {
+    display: block;
+    color: #73808e;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .mobile-web-greeting {
+    border-radius: 12px;
+    min-height: 206px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+      linear-gradient(90deg, #0b1218ed, #0b1218a6 50%, #0b12182e),
+      url("/campus-login.jpg") center 42% / cover;
+    margin-bottom: 26px;
+  }
+  .mobile-web-greeting span {
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.85;
+  }
+  .mobile-web-greeting h1 {
+    font-size: 34px;
+    margin: 6px 0 10px;
+  }
+  .mobile-web-greeting p {
+    color: #e4e7eb;
+    font-size: 13px;
+  }
+  .desktop-clock-grid {
+    display: grid;
+    grid-template-columns: minmax(310px, 0.85fr) minmax(0, 1.3fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .mobile-web-content .time-clock-card {
+    background: #fff;
+    border: 1px solid #e6e9ed;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 3px 10px #1b293304;
+  }
+  .mobile-clock-time {
+    font-size: 42px;
+    letter-spacing: -1px;
+    padding-bottom: 10px;
+  }
+  .mobile-clock-date {
+    font-size: 12px;
+  }
+  .mobile-web-content .time-clock-card > button {
+    min-height: 48px;
+  }
+  .mobile-web-content .clock-state {
+    padding: 16px;
+    font-size: 14px;
+  }
+  .desktop-recent-panel {
+    border: 1px solid #e6e9ed;
+    border-radius: 12px;
+    padding: 24px;
+    background: #fff;
+    min-height: 330px;
+  }
+  .mobile-section-heading {
+    margin: 0 0 20px;
+  }
+  .mobile-section-heading h2 {
+    font-size: 17px;
+  }
+  .desktop-recent-panel .mobile-shift {
+    border: 0;
+    border-top: 1px solid #edf0f3;
+    border-radius: 0;
+    padding: 20px 0;
+    margin: 0;
+  }
+  .desktop-recent-panel .mobile-shift b {
+    font-size: 14px;
+  }
+  .desktop-shortcut {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-column: 1/-1;
+    background: #faf2f5;
+    border: 1px solid #f0dce4;
+    border-radius: 12px;
+    padding: 26px 28px;
+    gap: 20px;
+  }
+  .desktop-shortcut span {
+    color: #980d38;
+    font-size: 9px;
+    letter-spacing: 1.7px;
+    font-weight: 700;
+  }
+  .desktop-shortcut h2 {
+    margin: 8px 0;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .desktop-shortcut p {
+    color: #74616a;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .desktop-shortcut button {
+    background: #fff;
+    border: 1px solid #e8c9d4;
+    color: #980d38;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .desktop-timesheet {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 0 26px;
+    align-items: start;
+  }
+  .desktop-timesheet .desktop-page-heading {
+    grid-column: 1/-1;
+  }
+  .mobile-week-picker {
+    grid-column: 1;
+    max-width: 390px;
+    background: #fff;
+    margin-bottom: 20px;
+  }
+  .mobile-week-picker > span {
+    font-size: 13px;
+  }
+  .desktop-week-list {
+    grid-column: 1;
+    border: 1px solid #e5e8ed;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .desktop-timesheet-columns {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 90px;
+    gap: 10px;
+    background: #f9fafb;
+    color: #7b8591;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 16px 22px;
+    border-bottom: 1px solid #e9ecf0;
+  }
+  .desktop-timesheet-columns span:last-child {
+    text-align: right;
+  }
+  .desktop-week-list .mobile-shift {
+    border: 0;
+    border-bottom: 1px solid #edf0f3;
+    border-radius: 0;
+    margin: 0;
+    min-height: 76px;
+    padding: 16px 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 90px;
+    gap: 10px;
+  }
+  .desktop-week-list .mobile-shift:last-child {
+    border-bottom: 0;
+  }
+  .desktop-week-list .mobile-shift > div {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    align-items: center;
+    gap: 5px 10px;
+  }
+  .desktop-week-list .mobile-shift strong {
+    font-size: 12px;
+    grid-column: 1;
+    grid-row: 1 / span 8;
+  }
+  .desktop-week-list .mobile-shift p {
+    font-size: 12px;
+    margin: 0;
+    grid-column: 2;
+  }
+  .desktop-week-list .mobile-shift b {
+    text-align: right;
+    font-size: 13px;
+  }
+  .desktop-timesheet-summary {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+  }
+  .mobile-week-total {
+    padding: 26px;
+    background: #fff;
+    border: 1px solid #e5e8ed;
+    text-align: left;
+    gap: 12px;
+  }
+  .mobile-week-total span {
+    color: #73808e;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .mobile-week-total strong {
+    color: #980d38;
+    font-size: 32px;
+  }
+  .mobile-report {
+    background: #fff;
+    border: 1px solid #e5e8ed;
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+  }
+  .mobile-report summary {
+    font-weight: 600;
+    font-size: 12px;
+  }
+  .mobile-report .form-grid.two {
+    grid-template-columns: 1fr;
+  }
+  .mobile-report button {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  .desktop-profile {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.2fr);
+    gap: 0 28px;
+    align-items: start;
+  }
+  .desktop-profile .desktop-page-heading {
+    grid-column: 1/-1;
+  }
+  .mobile-profile-card {
+    background: #fff;
+    border: 1px solid #e5e8ed;
+    border-radius: 12px;
+    padding: 32px 26px;
+  }
+  .mobile-profile-avatar {
+    width: 88px;
+    height: 88px;
+    font-size: 30px;
+  }
+  .mobile-profile-rows {
+    margin-top: 28px;
+  }
+  .mobile-profile-rows p {
+    font-size: 12px;
+    padding: 14px 0;
+  }
+  .desktop-profile .office-location {
+    margin-top: 0;
+    border: 1px solid #e5e8ed;
+    border-radius: 12px;
+    background: #fff;
+  }
+  .desktop-profile .office-location > header {
+    padding: 24px;
+    background: #fff;
+    border-bottom: 1px solid #edf0f3;
+  }
+  .desktop-profile .office-location > header > span {
+    color: #980d38;
+    font-size: 9px;
+  }
+  .desktop-profile .office-location h2 {
+    color: #172330;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  .desktop-profile .office-location iframe {
+    height: 260px;
+  }
+  .desktop-profile .office-location-details {
+    padding: 24px;
+  }
+  .mobile-signout {
+    grid-column: 1;
+    width: auto;
+    justify-self: start;
+    padding: 0 30px;
+    min-height: 42px;
+    font-size: 12px;
+    margin-top: 20px;
+  }
+  .mobile-web-app .metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .mobile-web-app .metric-card {
+    border: 1px solid #e5e8ed;
+    border-radius: 10px;
+    padding: 20px 18px;
+    min-height: 116px;
+    background: #fff;
+  }
+  .mobile-web-app .metric-card strong {
+    font-size: 28px;
+    font-weight: 750;
+    margin-top: 8px;
+  }
+  .mobile-web-app .metric-card span {
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .mobile-web-app .metric-icon {
+    width: 38px;
+    height: 38px;
+  }
+  .mobile-web-app .panel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-top: 26px;
+  }
+  .mobile-web-app .panel-grid > .panel:last-child {
+    grid-column: 1/-1;
+  }
+  .mobile-web-app .panel {
+    border-radius: 10px;
+    padding: 24px;
+    border-color: #e5e8ed;
+  }
+  .mobile-web-app .panel h2 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .mobile-web-app .table-head {
+    font-size: 10px;
+    font-weight: 600;
+    background: #f7f9fb;
+  }
+  .mobile-web-app .table-row strong,
+  .mobile-web-app .table-row span,
+  .mobile-web-app .table-row b {
+    font-size: 11px;
+  }
+  .mobile-web-app .table-head,
+  .mobile-web-app .table-row {
+    gap: 8px;
+  }
+  .mobile-web-app .page-header {
+    margin-bottom: 26px;
+  }
+  .mobile-web-app .page-header p {
+    font-size: 13px;
+    margin-top: 10px;
+    color: #73808e;
+  }
+  .mobile-web-app table th {
+    background: #f8fafb;
+    color: #72808e;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 16px;
+  }
+  .mobile-web-app table td {
+    padding: 18px 16px;
+    font-size: 12px;
+  }
+  .mobile-web-app .report-workspace {
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 24px;
+  }
+  .mobile-web-app .report-form {
+    padding: 24px;
+    border: 1px solid #e5e8ed;
+    background: #fff;
+    border-radius: 10px;
+  }
+  .mobile-web-app .pdf-preview {
+    min-height: 670px;
+  }
+  .login-page {
+    max-width: none;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(440px, 1fr);
+    grid-template-rows: auto 1fr;
+    background: #fff;
+  }
+  .login-topbar {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding: 38px 56px;
+    min-height: 140px;
+    background: #0b1218;
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  .login-topbar p {
+    display: none;
+  }
+  .login-topbar .brand-lockup span,
+  .login-topbar .brand-lockup b {
+    font-size: 28px;
+  }
+  .desktop-auth-story {
+    display: flex;
+    grid-column: 1;
+    grid-row: 2;
+    padding: 48px 56px;
+    align-items: center;
+    color: #fff;
+    background:
+      linear-gradient(180deg, #0b1218fa, #0b1218a8 65%, #0b1218c4),
+      url("/campus-login.jpg") center/cover;
+  }
+  .desktop-auth-copy {
+    max-width: 540px;
+    padding-bottom: 40px;
+  }
+  .desktop-auth-copy > span {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #e8a8bf;
+    font-weight: 700;
+  }
+  .desktop-auth-copy h1 {
+    color: #fff;
+    font-size: clamp(36px, 3.7vw, 60px);
+    font-weight: 750;
+    letter-spacing: -1.8px;
+    line-height: 1.12;
+    margin: 24px 0;
+  }
+  .desktop-auth-copy p {
+    color: #c3cad1;
+    max-width: 350px;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .desktop-auth-rule {
+    width: 42px;
+    height: 3px;
+    background: #bc2554;
+    margin: 40px 0 24px;
+  }
+  .desktop-auth-copy small {
+    font-size: 9px;
+    color: #a6b0bb;
+    letter-spacing: 1.3px;
+  }
+  .login-card {
+    grid-column: 2;
+    grid-row: 1/-1;
+    align-self: center;
+    justify-self: center;
+    width: min(100%, 460px);
+    padding: 48px 36px;
+    margin: 0;
+    gap: 20px;
+  }
+  .desktop-auth-welcome {
+    display: block;
+    margin-bottom: 8px;
+  }
+  .desktop-auth-welcome span {
+    font-size: 10px;
+    letter-spacing: 1.7px;
+    color: #980d38;
+    font-weight: 750;
+  }
+  .desktop-auth-welcome h2 {
+    font-size: 32px;
+    margin: 12px 0;
+    font-weight: 750;
+    letter-spacing: -0.9px;
+  }
+  .desktop-auth-welcome p {
+    font-size: 13px;
+    color: #788491;
+    line-height: 1.7;
+  }
+  .login-card label {
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .login-card input,
+  .login-card select {
+    font-size: 13px;
+    min-height: 46px;
+  }
+  .login-card > button {
+    min-height: 46px;
+    font-size: 13px;
+  }
+  .login-card small {
+    font-size: 11px;
+    line-height: 1.7;
+  }
+  .login-card .auth-tabs button {
+    font-size: 12px;
+  }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .mobile-web-app,
+  .mobile-web-app.admin-workspace {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .desktop-navigation {
+    width: 210px;
+  }
+  .desktop-brand {
+    padding: 30px 18px;
+  }
+  .desktop-brand p {
+    font-size: 7px;
+  }
+  .desktop-workspace {
+    padding: 26px;
+  }
+  .mobile-web-header {
+    padding: 0 26px;
+  }
+  .mobile-web-app .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mobile-web-app .panel-grid {
+    grid-template-columns: 1fr;
+  }
+  .desktop-clock-grid {
+    grid-template-columns: minmax(280px, 1fr) minmax(0, 1fr);
+    gap: 18px;
+  }
+  .mobile-web-content .time-clock-card {
+    padding: 22px;
+  }
+  .desktop-profile {
+    gap: 0 20px;
+  }
+  .desktop-timesheet {
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 0 18px;
+  }
+  .desktop-timesheet-columns {
+    grid-template-columns: 1fr 1.25fr 70px;
+    padding: 14px;
+  }
+  .desktop-week-list .mobile-shift {
+    padding: 14px;
+    grid-template-columns: minmax(0, 1fr) 70px;
+  }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .mobile-web-app,
+  .mobile-web-app.admin-workspace {
+    max-width: none;
+  }
+  .desktop-workspace {
+    padding: 20px;
+  }
+  .mobile-web-tabs {
+    width: 100%;
+  }
+  .mobile-web-greeting {
+    border-radius: 10px;
+  }
+}
+.install-app {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  max-width: min(340px, calc(100vw - 40px));
+}
+.install-app button {
+  background: #821b36;
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 14px;
+  cursor: pointer;
+  font: inherit;
+}
+.install-app .install-app-toggle { display: flex; gap: 8px; align-items: center; margin-left: auto; box-shadow: 0 3px 16px #0002; }
+.install-app-options { margin-top: 8px; padding: 20px; background: white; color: #20232a; border: 1px solid #dedee3; border-radius: 12px; box-shadow: 0 6px 28px #0002; max-height: 70dvh; overflow-y: auto; }
+.install-app-options p { font-size: 14px; line-height: 1.5; margin: 12px 0; }
+.install-app-options button { display: block; margin: 10px 0; width: 100%; }
+.install-app-options small { display: block; line-height: 1.5; margin-top: 8px; }
+.install-app button:focus-visible { outline: 3px solid #d69a26; outline-offset: 3px; }
+.install-app button:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 899px) { .install-app { display: none; } }

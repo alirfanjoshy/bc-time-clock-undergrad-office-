@@ -1,0 +1,27 @@
+# Free web trial. Use a Neon Free database; Render Free Postgres expires.
+services:
+  - type: web
+    name: bc-time-clock
+    runtime: node
+    plan: free
+    region: virginia
+    buildCommand: bash scripts/render-build.sh
+    startCommand: bash scripts/render-start.sh
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TZ
+        value: America/New_York
+      - key: WEB_DIST_PATH
+        value: ../frontend/desktop/dist
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: ADMIN_REGISTRATION_CODE
+        generateValue: true

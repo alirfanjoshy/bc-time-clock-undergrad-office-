@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  EMPLOYEE
+  ADMIN
+}
+
+enum TimeEntryStatus {
+  CLOCKED_IN
+  CLOCKED_OUT
+  EDITED
+}
+
+enum AuditAction {
+  TIME_ENTRY_EDITED
+  EMPLOYEE_CREATED
+  EMPLOYEE_DISABLED
+  EMPLOYEE_ENABLED
+  ROLE_CHANGED
+  REPORT_GENERATED
+  PASSWORD_CHANGED
+  LOGIN
+  LOGOUT
+}
+
+enum ReportType {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("departments")
+}
+
+model User {
+  id                String         @id @default(uuid())
+  firstName         String
+  lastName          String
+  email             String         @unique
+  employeeId        String         @unique @default(cuid())
+  passwordHash      String
+  role              UserRole       @default(EMPLOYEE)
+  departmentId      String
+  department        Department     @relation(fields: [departmentId], references: [id])
+  isActive          Boolean        @default(true)
+  timeEntries       TimeEntry[]    @relation("UserTimeEntries")
+  editedTimeEntries TimeEntry[]    @relation("EditedTimeEntries")
+  timesheets        Timesheet[]
+  auditLogsAuthored AuditLog[]     @relation("AuditActor")
+  auditLogsTargeted AuditLog[]     @relation("AuditTarget")
+  reportExports     ReportExport[]
+  refreshTokens     RefreshToken[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@map("users")
+}
+
+model TimeEntry {
+  id           String          @id @default(uuid())
+  userId       String
+  user         User            @relation("UserTimeEntries", fields: [userId], references: [id])
+  clockIn      DateTime
+  clockOut     DateTime?
+  workDate     DateTime        @db.Date
+  totalMinutes Int?
+  status       TimeEntryStatus @default(CLOCKED_IN)
+  notes        String?
+  editedBy     String?
+  editor       User?           @relation("EditedTimeEntries", fields: [editedBy], references: [id])
+  editReason   String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([userId, workDate])
+  @@index([status])
+  @@map("time_entries")
+}
+
+model Timesheet {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  periodStart  DateTime @db.Date
+  periodEnd    DateTime @db.Date
+  totalMinutes Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, periodStart, periodEnd])
+  @@map("timesheets")
+}
+
+model AuditLog {
+  id               String      @id @default(uuid())
+  actorUserId      String?
+  actor            User?       @relation("AuditActor", fields: [actorUserId], references: [id])
+  targetUserId     String?
+  targetUser       User?       @relation("AuditTarget", fields: [targetUserId], references: [id])
+  targetEntityType String?
+  targetEntityId   String?
+  action           AuditAction
+  metadata         Json?
+  ipAddress        String?
+  userAgent        String?
+  createdAt        DateTime    @default(now())
+
+  @@index([action, createdAt])
+  @@index([actorUserId])
+  @@index([targetUserId])
+  @@map("audit_logs")
+}
+
+model ReportExport {
+  id           String     @id @default(uuid())
+  type         ReportType
+  generatedBy  String
+  generator    User       @relation(fields: [generatedBy], references: [id])
+  departmentId String?
+  dateStart    DateTime   @db.Date
+  dateEnd      DateTime   @db.Date
+  fileName     String
+  storageKey   String?
+  createdAt    DateTime   @default(now())
+
+  @@index([type, dateStart, dateEnd])
+  @@map("report_exports")
+}
+
+model RefreshToken {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  tokenHash         String    @unique
+  expiresAt         DateTime
+  revokedAt         DateTime?
+  createdAt         DateTime  @default(now())
+  createdByIp       String?
+  revokedByIp       String?
+  replacedByTokenId String?
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}

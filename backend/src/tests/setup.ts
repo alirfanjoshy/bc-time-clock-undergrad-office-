@@ -1,0 +1,9 @@
+process.env.NODE_ENV = 'test';
+process.env.PORT = '4001';
+process.env.DATABASE_URL = 'postgresql://postgres:postgres@localhost:5432/bc_timeclock_test';
+process.env.JWT_ACCESS_SECRET = 'test-access-secret-with-at-least-thirty-two-characters';
+process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-with-at-least-thirty-two-characters';
+process.env.ACCESS_TOKEN_TTL_MINUTES = '15';
+process.env.REFRESH_TOKEN_TTL_DAYS = '30';
+process.env.BCRYPT_ROUNDS = '10';
+process.env.CORS_ORIGINS = 'http://localhost:5173';

@@ -1,0 +1,13 @@
+**/node_modules/
+**/dist/
+**/.env
+**/.env.*
+!**/.env.example
+**/storage/
+**/coverage/
+**/.expo/
+**/target/
+**/*.log
+.DS_Store
+.hosting-upload/
+*.zip
