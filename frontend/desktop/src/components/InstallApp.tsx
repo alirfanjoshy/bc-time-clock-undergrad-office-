@@ -14,8 +14,6 @@ export function InstallApp() {
   const [busy, setBusy] = useState(false);
   const native = '__TAURI_INTERNALS__' in window;
   const isMac = /Macintosh|MacIntel/.test(navigator.userAgent + navigator.platform) && navigator.maxTouchPoints <= 1;
-  const isWindows = /Windows/.test(navigator.userAgent);
-  const device = isMac ? 'Mac' : isWindows ? 'PC' : 'device';
 
   useEffect(() => {
     const media = window.matchMedia('(display-mode: standalone)');
@@ -50,41 +48,23 @@ export function InstallApp() {
     }
   }
 
-  function download() {
-    // Never include password reset tokens, query parameters, or account data.
-    const url = new URL(import.meta.env.BASE_URL, window.location.origin).href;
-    const filename = 'BC-Time-Clock.url';
-    const blob = new Blob([`[InternetShortcut]\r\nURL=${url}\r\n`], { type: 'application/octet-stream' });
-    const objectUrl = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = objectUrl;
-    anchor.download = filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
-    setMessage(`Move ${filename} to your Windows desktop, then double-click it to open the time clock in your browser.`);
-  }
-
   if (native || installed) return null;
   return (
     <aside className="install-app" aria-label="Install BC Time Clock">
       <button type="button" className="install-app-toggle" aria-expanded={expanded} aria-controls="install-app-options" onClick={() => setExpanded(!expanded)}>
-        <Download size={16} aria-hidden="true" /> {expanded ? 'Close install options' : `Install on ${device} · Free`}
+        <Download size={16} aria-hidden="true" /> {expanded ? 'Close install options' : 'Download for Mac & Windows'}
       </button>
       {expanded && <div id="install-app-options" className="install-app-options">
-        <strong>BC Time Clock for your {device}</strong>
+        <strong>BC Time Clock for Mac & Windows</strong>
         <p>Open your time clock from your desktop. Sign in with your usual account. Internet is required to clock in and out.</p>
-        {isMac && <>
+        <>
           <a className="install-app-download" href={`${import.meta.env.BASE_URL}downloads/BC-Time-Clock-Mac.zip`} download="BC-Time-Clock-Mac.zip">Download for Mac</a>
           <small>Open the ZIP, then double-click BC Time Clock.webloc. Keep it on your desktop for easy access. This shortcut opens the live website in your default browser.</small>
-        </>}
+          <a className="install-app-download" href={`${import.meta.env.BASE_URL}downloads/BC-Time-Clock-Windows.zip`} download="BC-Time-Clock-Windows.zip">Download for Windows</a>
+          <small>Open the ZIP, then double-click BC-Time-Clock.url. Keep it on your Windows desktop. This shortcut opens the live website in your default browser.</small>
+        </>
         {prompt ? <button type="button" disabled={busy} onClick={install}>{busy ? 'Opening installer…' : `Install ${isMac ? 'Mac ' : ''}app`}</button> : <p>For a separate app window in Chrome, choose ⋮ → Cast, save and share → Install page as app. If already installed, open it from chrome://apps.</p>}
         {isMac && <p>In Safari on macOS Sonoma 14 or later, choose File → Add to Dock. Firefox on Mac can use the download above; app installation is available through Chrome or Safari.</p>}
-        {isWindows && <>
-          <button type="button" onClick={download}>Download Windows shortcut</button>
-          <small>The shortcut opens this website in your default browser.</small>
-        </>}
         {['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname) && <small>This is a local preview. Download from the live website before sharing with other computers.</small>}
         <p role="status">{message}</p>
       </div>}
