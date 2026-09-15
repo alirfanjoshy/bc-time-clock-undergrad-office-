@@ -1,8 +1,10 @@
 # BC Time Clock web app installation
 
-The web app includes a free **Install on PC** menu on desktop screens:
+The web app includes a free **Install on Mac** or **Install on PC** menu on desktop screens:
 
 - **Install free app** opens the browser's installation prompt when available.
+- **Download for Mac** saves `BC-Time-Clock-Mac.zip`. Extract it and open `BC Time Clock.webloc` to launch the live Render website in the default browser. The shortcut is packaged as a ZIP for reliable downloads in Chrome, Firefox, and Safari.
+- Chrome can install a separate app window using **Cast, save and share → Install page as app**; Safari uses **File → Add to Dock** on macOS Sonoma 14 or later. Firefox on Mac can use the shortcut.
 - **Download Windows shortcut** saves `BC-Time-Clock.url`. Move it to the Windows desktop and double-click to open the website in the default browser. This is a shortcut, not an executable installer.
 
 The installed web app uses the existing accounts, API, and attendance records. Internet access and a running backend are required. No attendance requests are cached or queued offline.
