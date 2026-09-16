@@ -67,6 +67,10 @@ export function createApp(options: { webDistPath?: string } = {}) {
     app.use('/api', notFoundHandler);
     app.use(express.static(directory, {
       setHeaders(res, filePath) {
+        if (path.basename(filePath) === 'BC-Time-Clock.webloc') {
+          res.setHeader('Content-Type', 'application/octet-stream');
+          res.setHeader('Content-Disposition', 'attachment; filename="BC-Time-Clock.webloc"');
+        }
         if (filePath.endsWith('index.html') || filePath.endsWith('.webmanifest')) {
           res.setHeader('Cache-Control', 'no-cache');
         }

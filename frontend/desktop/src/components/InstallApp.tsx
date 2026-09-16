@@ -58,8 +58,8 @@ export function InstallApp() {
         <strong>BC Time Clock for Mac & Windows</strong>
         <p>Open your time clock from your desktop. Sign in with your usual account. Internet is required to clock in and out.</p>
         <>
-          <a className="install-app-download" href={`${import.meta.env.BASE_URL}downloads/BC-Time-Clock-Mac.zip`} download="BC-Time-Clock-Mac.zip">Download for Mac</a>
-          <small>Open the ZIP, then double-click BC Time Clock.webloc. Keep it on your desktop for easy access. This shortcut opens the live website in your default browser.</small>
+          <a className="install-app-download" href={`${import.meta.env.BASE_URL}downloads/BC-Time-Clock.webloc`} download="BC-Time-Clock.webloc">Download for Mac</a>
+          <small>Click to download, then double-click BC-Time-Clock.webloc. Keep it on your desktop for easy access. This shortcut opens the live website in your default browser.</small>
           <a className="install-app-download" href={`${import.meta.env.BASE_URL}downloads/BC-Time-Clock-Windows.zip`} download="BC-Time-Clock-Windows.zip">Download for Windows</a>
           <small>Open the ZIP, then double-click BC-Time-Clock.url. Keep it on your Windows desktop. This shortcut opens the live website in your default browser.</small>
         </>

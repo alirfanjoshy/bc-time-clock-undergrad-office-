@@ -3,7 +3,7 @@
 The web app includes a free **Download for Mac & Windows** menu on desktop screens:
 
 - **Install free app** opens the browser's installation prompt when available.
-- **Download for Mac** saves `BC-Time-Clock-Mac.zip`. Extract it and open `BC Time Clock.webloc` to launch the live Render website in the default browser. The shortcut is packaged as a ZIP for reliable downloads in Chrome, Firefox, and Safari.
+- **Download for Mac** directly saves `BC-Time-Clock.webloc`. Open it to launch the live Render website in the default browser. No ZIP extraction is needed.
 - Chrome can install a separate app window using **Cast, save and share → Install page as app**; Safari uses **File → Add to Dock** on macOS Sonoma 14 or later. Firefox on Mac can use the shortcut.
 - **Download for Windows** saves `BC-Time-Clock-Windows.zip`. Extract it to get `BC-Time-Clock.url`. Move it to the Windows desktop and double-click to open the website in the default browser. This is a shortcut, not an executable installer.
 
