@@ -2,96 +2,56 @@ import PDFDocument from 'pdfkit';
 import { TimeEntryWithUser } from '../repositories/timeEntry.repository.js';
 import { formatDate, formatMinutes, formatTime } from '../utils/dates.js';
 
-export function createTimesheetPdf(input: {
-  reportTitle: string;
-  dateStart: Date;
-  dateEnd: Date;
-  entries: TimeEntryWithUser[];
-  employeeName?: string;
-  personal?: boolean;
-  supervisorName?: string;
-}) {
+const maroon = '#7f1d35';
+const gold = '#d59b2a';
+const paper = '#fffdf8';
+const days = ['SUN', 'MON', 'TUES', 'WED', 'THURS', 'FRI', 'SAT'];
+const addDays = (d: Date, n: number) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const shortDate = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+
+function cell(doc: PDFKit.PDFDocument, x: number, y: number, w: number, h: number, value = '', bold = false, align: PDFKit.Mixins.TextOptions['align'] = 'center') {
+  doc.rect(x, y, w, h).strokeColor('#b8b3aa').lineWidth(0.5).stroke();
+  if (value) doc.font(bold ? 'Helvetica-Bold' : 'Helvetica').fontSize(7).fillColor('#242424').text(value, x + 2, y + (h - 8) / 2, { width: w - 4, align, lineBreak: false });
+}
+
+function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: Date; entries: TimeEntryWithUser[]; employeeName?: string; supervisorName?: string; personal?: boolean }) {
+  const left = 38; const right = 574; const width = right - left;
+  doc.rect(0, 0, 612, 792).fill(paper);
+  doc.fillColor(maroon).font('Helvetica-Bold').fontSize(12).text('COLLEGE ASSISTANT / STUDENT AIDE', left, 34, { width, align: 'center' });
+  doc.fontSize(11).text('EMPLOYEE TIME SHEET', left, 50, { width, align: 'center' });
+  doc.font('Helvetica').fontSize(9).text('BROOKLYN COLLEGE', left, 66, { width, align: 'center' });
+  doc.font('Helvetica-Bold').fontSize(9).text('PAYROLL OFFICE', left, 80, { width, align: 'center' });
+  const infoY = 108;
+  doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY + 6, { width, align: 'center' });
+  doc.rect(left, infoY, width, 48).strokeColor('#9e9a92').stroke();
+  doc.moveTo(left + 280, infoY).lineTo(left + 280, infoY + 48).stroke(); doc.moveTo(left, infoY + 24).lineTo(right, infoY + 24).stroke();
+  doc.font('Helvetica').fontSize(8).text('DEPT#:  UNDERGRADUATE RECRUITMENT', left + 8, infoY + 29); doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 7); doc.text('RATE $:  __________', left + 8, infoY + 7); doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 29);
+  const detailY = 170;
+  doc.font('Helvetica-Bold').text('PAYROLL PERIOD:', left + 110, detailY); doc.font('Helvetica').text(`${formatDate(input.dateStart)} - ${formatDate(input.dateEnd)}`, left + 210, detailY);
+  const first = input.employeeName?.split(' ').slice(0, -1).join(' ') ?? ''; const last = input.employeeName?.split(' ').slice(-1)[0] ?? '';
+  doc.font('Helvetica-Bold').text('LAST NAME:', left, detailY + 26); doc.font('Helvetica').text(last || '________________', left + 64, detailY + 26); doc.font('Helvetica-Bold').text('FIRST NAME:', left + 250, detailY + 26); doc.font('Helvetica').text(first || '________________', left + 319, detailY + 26);
+  doc.font('Helvetica-Bold').text('EMPL ID#:', left, detailY + 42); doc.font('Helvetica').text('________________', left + 64, detailY + 42); doc.font('Helvetica-Bold').text('DEPARTMENT:', left + 250, detailY + 42); doc.font('Helvetica').text('Undergraduate Recruitment', left + 319, detailY + 42);
+  const widths = [22, 45, 50, 48, 58, 48, 62, 50, 50, 44, 50, 109];
+  const headers = ['No.', 'Day', 'Date', 'Time\nIn', 'Meal\nPeriod', 'Time\nOut', '#Hours\nWorked', 'Sick\nHours', 'Annual\nHours', 'Total', 'Shift\nHours', 'Signature'];
+  let y = 238; let x = left; headers.forEach((h, i) => { cell(doc, x, y, widths[i], 32, h, true); x += widths[i]; });
+  const count = Math.max(7, Math.min(14, Math.ceil((input.dateEnd.getTime() - input.dateStart.getTime()) / 86400000) + 1)); let total = 0;
+  for (let i = 0; i < count; i += 1) {
+    const date = addDays(input.dateStart, i); const entry = input.entries.find((e) => e.workDate.toDateString() === date.toDateString()); const mins = entry?.totalMinutes ?? 0; total += mins; x = left;
+    const values = [String(i + 1), days[date.getDay()], shortDate(date), entry ? formatTime(entry.clockIn) : '', entry ? '1 hour' : '', entry?.clockOut ? formatTime(entry.clockOut) : '', entry?.totalMinutes == null && entry ? 'In progress' : entry ? formatMinutes(mins) : '', '', '', entry ? formatMinutes(mins) : '', entry ? formatMinutes(mins) : '', entry ? (input.personal ? input.employeeName ?? '' : `${entry.user.firstName} ${entry.user.lastName}`) : ''];
+    values.forEach((v, col) => { cell(doc, x, y + 32 + i * 25, widths[col], 25, v, false, col === 11 ? 'left' : 'center'); x += widths[col]; });
+  }
+  const subtotalY = y + 32 + count * 25; x = left; widths.forEach((w, i) => { cell(doc, x, subtotalY, w, 25, i === 1 ? 'WEEK SUB-TOTAL' : i === 6 || i === 9 ? formatMinutes(total) : '', true, i === 1 ? 'left' : 'center'); x += w; });
+  const totalY = subtotalY + 25; x = left; widths.forEach((w, i) => { cell(doc, x, totalY, w, 27, i === 1 ? 'TOTAL HOURS' : i === 6 || i === 9 ? formatMinutes(total) : '', true, i === 1 ? 'left' : 'center'); x += w; });
+  const footerY = totalY + 53; doc.fillColor('#242424').font('Helvetica').fontSize(8).text('I certify that the hours above have been worked. Sick and/or annual leave hours have to be taken as indicated.', left, footerY, { width, align: 'center' }); doc.text('All computations are correct and there are sufficient funds in my allocation to pay this expenditure.', left, footerY + 12, { width, align: 'center' });
+  doc.moveTo(left, footerY + 55).lineTo(left + 170, footerY + 55).strokeColor('#777').stroke(); doc.moveTo(left + 195, footerY + 55).lineTo(left + 365, footerY + 55).stroke(); doc.moveTo(left + 390, footerY + 55).lineTo(right, footerY + 55).stroke();
+  doc.fontSize(7).text(input.employeeName ?? 'Prepared by', left, footerY + 60, { width: 170, align: 'center' }); doc.text(input.supervisorName ?? "Department's Extension", left + 195, footerY + 60, { width: 170, align: 'center' }); doc.text('Chairperson/Authorized Representative', left + 390, footerY + 60, { width: 184, align: 'center' });
+  doc.font('Helvetica-Bold').fontSize(8).fillColor(gold).text(input.personal ? 'EMPLOYEE COPY' : 'SUPERVISOR / ADMIN COPY', left, 760, { width, align: 'right' });
+}
+
+export function createTimesheetPdf(input: { reportTitle: string; dateStart: Date; dateEnd: Date; entries: TimeEntryWithUser[]; employeeName?: string; personal?: boolean; supervisorName?: string }) {
   return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    const doc = new PDFDocument({ margin: 48, size: 'LETTER' });
-
-    doc.on('data', (chunk: Buffer) => chunks.push(chunk));
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
-    doc.on('error', reject);
-
-    doc.font('Helvetica-Bold').fontSize(22).text('BROOKLYN COLLEGE');
-    doc.fontSize(12).text('Undergraduate Recruitment Office');
-    doc.moveDown(0.5);
-    doc.fontSize(18).text(input.reportTitle);
-    doc.moveDown(0.5);
-    doc.font('Helvetica').fontSize(11).text(`Date Range: ${formatDate(input.dateStart)} - ${formatDate(input.dateEnd)}`);
-    if (input.employeeName) {
-      doc.text(`Employee: ${input.employeeName}`);
-    }
-    doc.moveDown(1);
-
-    const tableTop = doc.y;
-    const columns = {
-      date: 48,
-      employeeName: 125,
-      clockIn: 300,
-      clockOut: 385,
-      worked: 475,
-    };
-
-    doc.font('Helvetica-Bold').fontSize(10);
-    doc.text('Date', columns.date, tableTop);
-    doc.text('Employee', columns.employeeName, tableTop);
-    doc.text('Clock In', columns.clockIn, tableTop);
-    doc.text('Clock Out', columns.clockOut, tableTop);
-    doc.text('Worked Hours', columns.worked, tableTop);
-    doc.moveTo(48, tableTop + 16).lineTo(548, tableTop + 16).stroke();
-
-    let rowY = tableTop + 28;
-    let totalMinutes = 0;
-    const employeeIds = new Set<string>();
-
-    doc.font('Helvetica').fontSize(10);
-    for (const entry of input.entries) {
-      if (rowY > 680) {
-        doc.addPage();
-        rowY = 56;
-      }
-
-      const worked = entry.totalMinutes ?? 0;
-      totalMinutes += worked;
-      employeeIds.add(entry.userId);
-      doc.text(formatDate(entry.workDate), columns.date, rowY, { width: 68 });
-      doc.text(`${entry.user.firstName} ${entry.user.lastName}`, columns.employeeName, rowY, { width: 165 });
-      doc.text(formatTime(entry.clockIn), columns.clockIn, rowY);
-      doc.text(formatTime(entry.clockOut), columns.clockOut, rowY);
-      doc.text(entry.totalMinutes === null ? 'In progress' : formatMinutes(worked), columns.worked, rowY);
-      rowY += 22;
-    }
-
-    if (input.entries.length === 0) {
-      doc.text('No time entries found for this date range.', columns.date, rowY);
-      rowY += 28;
-    }
-
-    doc.moveTo(48, rowY).lineTo(548, rowY).stroke();
-    rowY += 18;
-    doc.font('Helvetica-Bold');
-    doc.text(`Employee count: ${input.personal ? 1 : employeeIds.size}`, 48, rowY);
-    doc.text(`Total hours: ${formatMinutes(totalMinutes)}`, 260, rowY);
-    rowY += 42;
-
-    doc.font('Helvetica').fontSize(11);
-    doc.text(
-      `${input.personal ? 'Employee name' : 'Supervisor name'}: ${input.employeeName ?? input.supervisorName ?? '____________________'}`,
-      48,
-      rowY,
-    );
-    rowY += 34;
-    doc.text(`${input.personal ? 'Employee signature' : 'Signature'}: ______________________________`, 48, rowY);
-    rowY += 34;
-    doc.text('Approval date: __________________________', 48, rowY);
-
-    doc.end();
+    const chunks: Buffer[] = []; const doc = new PDFDocument({ margin: 0, size: 'LETTER' }); doc.on('data', (chunk: Buffer) => chunks.push(chunk)); doc.on('end', () => resolve(Buffer.concat(chunks))); doc.on('error', reject);
+    const names = input.personal ? [input.employeeName ?? ''] : [...new Set(input.entries.map((e) => `${e.user.firstName} ${e.user.lastName}`))]; if (!names.length) names.push(input.employeeName ?? 'All employees');
+    names.forEach((name, i) => { if (i) doc.addPage(); renderPage(doc, { ...input, employeeName: name, entries: input.personal ? input.entries : input.entries.filter((e) => `${e.user.firstName} ${e.user.lastName}` === name) }); }); doc.end();
   });
 }
