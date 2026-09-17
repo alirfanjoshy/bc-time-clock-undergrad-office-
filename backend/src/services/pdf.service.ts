@@ -21,12 +21,20 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   doc.fontSize(11).text('EMPLOYEE TIME SHEET', left, 50, { width, align: 'center' });
   doc.font('Helvetica').fontSize(9).text('BROOKLYN COLLEGE', left, 66, { width, align: 'center' });
   doc.font('Helvetica-Bold').fontSize(9).text('PAYROLL OFFICE', left, 80, { width, align: 'center' });
-  const infoY = 116;
-  doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY - 13, { width, align: 'center' });
-  doc.rect(left, infoY, width, 48).strokeColor('#9e9a92').stroke();
-  doc.moveTo(left + 280, infoY).lineTo(left + 280, infoY + 48).stroke(); doc.moveTo(left, infoY + 24).lineTo(right, infoY + 24).stroke();
-  doc.font('Helvetica').fontSize(8).text('DEPT#:  UNDERGRADUATE RECRUITMENT', left + 8, infoY + 29); doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 7); doc.text('RATE $:  __________', left + 8, infoY + 7); doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 29);
-  const detailY = 170;
+  const infoY = 105;
+  doc.rect(left, infoY, width, 72).strokeColor('#9e9a92').stroke();
+  doc.moveTo(left, infoY + 20).lineTo(right, infoY + 20).stroke();
+  doc.moveTo(left, infoY + 38).lineTo(right, infoY + 38).stroke();
+  doc.moveTo(left, infoY + 56).lineTo(right, infoY + 56).stroke();
+  doc.moveTo(left + 280, infoY + 20).lineTo(left + 280, infoY + 72).stroke();
+  doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY + 6, { width, align: 'center' });
+  doc.font('Helvetica').fontSize(8).text('CA  [ ]     SA  [ ]', left + 8, infoY + 25);
+  doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 25);
+  doc.text('DEPT#:  UNDERGRADUATE RECRUITMENT', left + 8, infoY + 43);
+  doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 43);
+  doc.text('RATE $:  __________', left + 8, infoY + 61);
+  doc.text('BALANCE HOURS:  __________', left + 288, infoY + 61);
+  const detailY = 188;
   doc.font('Helvetica-Bold').text('PAYROLL PERIOD:', left + 110, detailY); doc.font('Helvetica').text(`${formatDate(input.dateStart)} - ${formatDate(input.dateEnd)}`, left + 210, detailY);
   const first = input.employeeName?.split(' ').slice(0, -1).join(' ') ?? ''; const last = input.employeeName?.split(' ').slice(-1)[0] ?? '';
   doc.font('Helvetica-Bold').text('LAST NAME:', left, detailY + 26); doc.font('Helvetica').text(last || '________________', left + 64, detailY + 26); doc.font('Helvetica-Bold').text('FIRST NAME:', left + 250, detailY + 26); doc.font('Helvetica').text(first || '________________', left + 319, detailY + 26);
@@ -35,14 +43,20 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   const widths = [20, 42, 46, 43, 52, 43, 57, 42, 42, 40, 44, 65];
   const headers = ['No.', 'Day', 'Date', 'Time\nIn', 'Meal\nPeriod', 'Time\nOut', '#Hours\nWorked', 'Sick\nHours', 'Annual\nHours', 'Total', 'Shift\nHours', 'Signature'];
   let y = 238; let x = left; headers.forEach((h, i) => { cell(doc, x, y, widths[i], 32, h, true); x += widths[i]; });
-  const count = Math.max(7, Math.min(14, Math.ceil((input.dateEnd.getTime() - input.dateStart.getTime()) / 86400000) + 1)); let total = 0;
+  const count = 14; let total = 0; let weekTotal = 0; let row = 0;
   for (let i = 0; i < count; i += 1) {
     const date = addDays(input.dateStart, i); const entry = input.entries.find((e) => e.workDate.toDateString() === date.toDateString()); const mins = entry?.totalMinutes ?? 0; total += mins; x = left;
-    const values = [String(i + 1), days[date.getDay()], shortDate(date), entry ? formatTime(entry.clockIn) : '', entry ? '1 hour' : '', entry?.clockOut ? formatTime(entry.clockOut) : '', entry?.totalMinutes == null && entry ? 'In progress' : entry ? formatMinutes(mins) : '', '', '', entry ? formatMinutes(mins) : '', entry ? formatMinutes(mins) : '', entry ? (input.personal ? input.employeeName ?? '' : `${entry.user.firstName} ${entry.user.lastName}`) : ''];
-    values.forEach((v, col) => { cell(doc, x, y + 32 + i * 25, widths[col], 25, v, false, col === 11 ? 'left' : 'center'); x += widths[col]; });
+    const hourText = mins && mins % 60 === 0 ? String(mins / 60) : (mins ? formatMinutes(mins) : '');
+    const values = [String(i + 1), days[date.getDay()], shortDate(date), entry ? formatTime(entry.clockIn) : '', entry ? '1 hour' : '', entry?.clockOut ? formatTime(entry.clockOut) : '', entry?.totalMinutes == null && entry ? 'In progress' : hourText, '', '', hourText, hourText, entry ? (input.personal ? input.employeeName ?? '' : `${entry.user.firstName} ${entry.user.lastName}`) : ''];
+    values.forEach((v, col) => { cell(doc, x, y + 32 + row * 21, widths[col], 21, v, false, col === 11 ? 'left' : 'center'); x += widths[col]; });
+    weekTotal += mins; row += 1;
+    if (i === 6 || i === 13) {
+      const subtotalY = y + 32 + row * 21; x = left;
+      widths.forEach((w, col) => { cell(doc, x, subtotalY, w, 23, col === 1 ? 'WEEK SUB-TOTAL' : col === 6 || col === 9 ? (weekTotal && weekTotal % 60 === 0 ? String(weekTotal / 60) : formatMinutes(weekTotal)) : '', true, col === 1 ? 'left' : 'center'); x += w; });
+      row += 23 / 21; weekTotal = 0;
+    }
   }
-  const subtotalY = y + 32 + count * 25; x = left; widths.forEach((w, i) => { cell(doc, x, subtotalY, w, 25, i === 1 ? 'WEEK SUB-TOTAL' : i === 6 || i === 9 ? formatMinutes(total) : '', true, i === 1 ? 'left' : 'center'); x += w; });
-  const totalY = subtotalY + 25; x = left; widths.forEach((w, i) => { cell(doc, x, totalY, w, 27, i === 1 ? 'TOTAL HOURS' : i === 6 || i === 9 ? formatMinutes(total) : '', true, i === 1 ? 'left' : 'center'); x += w; });
+  const totalY = y + 32 + row * 21; x = left; widths.forEach((w, i) => { cell(doc, x, totalY, w, 27, i === 1 ? 'TOTAL HOURS' : i === 6 || i === 9 ? (total && total % 60 === 0 ? String(total / 60) : formatMinutes(total)) : '', true, i === 1 ? 'left' : 'center'); x += w; });
   const footerY = totalY + 53; doc.fillColor('#242424').font('Helvetica').fontSize(8).text('I certify that the hours above have been worked. Sick and/or annual leave hours have to be taken as indicated.', left, footerY, { width, align: 'center' }); doc.text('All computations are correct and there are sufficient funds in my allocation to pay this expenditure.', left, footerY + 12, { width, align: 'center' });
   doc.moveTo(left, footerY + 55).lineTo(left + 170, footerY + 55).strokeColor('#777').stroke(); doc.moveTo(left + 195, footerY + 55).lineTo(left + 365, footerY + 55).stroke(); doc.moveTo(left + 390, footerY + 55).lineTo(right, footerY + 55).stroke();
   doc.fontSize(7).text(input.employeeName ?? 'Prepared by', left, footerY + 60, { width: 170, align: 'center' }); doc.text(input.supervisorName ?? "Department's Extension", left + 195, footerY + 60, { width: 170, align: 'center' }); doc.text('Chairperson/Authorized Representative', left + 390, footerY + 60, { width: 184, align: 'center' });
