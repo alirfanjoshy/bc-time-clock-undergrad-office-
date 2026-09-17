@@ -6,7 +6,7 @@ export function CampusWelcome({ onLogIn, onSignUp }: Props) {
   return (
     <main className="campus-welcome">
       <header className="campus-welcome-nav">
-        <a className="campus-wordmark" href="#" aria-label="Brooklyn College home">Brooklyn<br />College<span>THE CITY UNIVERSITY OF NEW YORK</span></a>
+        <a className="campus-wordmark" href="#" aria-label="Brooklyn College home"><img src={`${import.meta.env.BASE_URL}brooklyn-cuny-logo.png`} alt="Brooklyn College | CUNY" /></a>
         <span className="campus-office">Undergraduate Recruitment Office</span>
         <nav aria-label="Account options">
           <button className="campus-login-link" onClick={onLogIn}>Log in</button>

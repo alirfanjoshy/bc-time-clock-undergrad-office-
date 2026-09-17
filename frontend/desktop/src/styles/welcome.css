@@ -5,3 +5,14 @@
 .login-page .campus-return{background:none;color:#fff;font-size:12px;min-height:36px;padding:0;align-self:flex-start}.login-page .login-topbar:has(.campus-return){flex-wrap:wrap}.login-page .campus-return{flex-basis:100%}.login-card fieldset{border:0;margin:0;padding:0;display:contents}
 @media(min-width:1400px){.campus-welcome-hero{display:grid;grid-template-columns:1fr 1fr}.campus-welcome-hero>img{grid-column:1/-1}.campus-hero-copy{bottom:16%}}
 @media(max-width:700px){.campus-welcome-nav{padding:20px 6%;gap:12px}.campus-wordmark{font-size:24px}.campus-wordmark span{font-size:6px}.campus-office{display:none}.campus-welcome-nav nav{gap:4px}.campus-welcome .campus-signup{padding:0 15px}.campus-welcome .campus-login-link{padding:0 12px}.campus-welcome-hero>img{position:relative}.campus-hero-shade{background:linear-gradient(0deg,#17251f,transparent 40%);bottom:auto;aspect-ratio:1.25}.campus-hero-copy{position:relative;left:auto;bottom:auto;padding:30px 7% 58px;background:#17251f;margin-top:-1px}.campus-hero-copy h1{font-size:40px;margin:18px 0}.campus-heading-break{display:none}.campus-hero-copy p{font-size:14px}.campus-hero-actions{margin-top:24px;gap:10px}.campus-hero-actions>button{padding:0 16px;font-size:12px}.campus-photo-caption{bottom:20px;font-size:8px;letter-spacing:1.2px}.campus-intro{grid-template-columns:1fr;gap:8px;padding:46px 7% 24px}.campus-features{grid-template-columns:1fr;gap:24px;padding-bottom:40px}.campus-features p{max-width:none}.campus-welcome-footer{align-items:flex-start;flex-direction:column;gap:0}.login-page .campus-return{flex-basis:auto}}
+
+/* Official white Brooklyn College / CUNY lockup on the reference's black header. */
+.campus-welcome-nav{background:#000;padding:28px 7%;min-height:120px}
+.campus-wordmark{display:block;flex-shrink:0;line-height:0}
+.campus-wordmark img{display:block;width:245px;height:auto;max-width:100%}
+.campus-office{color:#d2d2d2}
+.campus-welcome .campus-login-link{color:#fff}
+.campus-welcome .campus-signup{background:#821b36;border:1px solid #ac506a}
+@media(max-width:1000px){.campus-office{display:none}}
+@media(max-width:600px){.campus-welcome-nav{padding:22px 6%;min-height:100px;flex-wrap:wrap;gap:20px}.campus-wordmark img{width:205px}.campus-welcome-nav nav{margin-left:auto}}
+@media(max-width:400px){.campus-welcome-nav{gap:16px}.campus-wordmark img{width:180px}.campus-welcome-nav nav{width:100%;justify-content:flex-end}}
