@@ -35,11 +35,13 @@ export function PasswordResetPage({
         ).message,
       );
     } catch (caught) {
-      setError(
-        caught instanceof ApiError
-          ? caught.message
-          : "Unable to connect. Please try again.",
-      );
+      if (caught instanceof ApiError && caught.code === "PASSWORD_RESET_UNAVAILABLE") {
+        setError("Password reset email is not configured yet. Please contact your office administrator.");
+      } else if (caught instanceof ApiError && caught.code === "EMAIL_DELIVERY_FAILED") {
+        setError("We could not send the reset email right now. Please try again later or contact your office administrator.");
+      } else {
+        setError(caught instanceof ApiError ? caught.message : "Unable to connect. Please try again.");
+      }
     } finally {
       setBusy(false);
     }
