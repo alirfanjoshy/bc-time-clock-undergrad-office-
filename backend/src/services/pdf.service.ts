@@ -53,6 +53,18 @@ export function createTimesheetPdf(input: { reportTitle: string; dateStart: Date
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = []; const doc = new PDFDocument({ margin: 0, size: 'LETTER' }); doc.on('data', (chunk: Buffer) => chunks.push(chunk)); doc.on('end', () => resolve(Buffer.concat(chunks))); doc.on('error', reject);
     const names = input.personal ? [input.employeeName ?? ''] : [...new Set(input.entries.map((e) => `${e.user.firstName} ${e.user.lastName}`))]; if (!names.length) names.push(input.employeeName ?? 'All employees');
-    names.forEach((name, i) => { if (i) doc.addPage(); renderPage(doc, { ...input, employeeName: name, entries: input.personal ? input.entries : input.entries.filter((e) => `${e.user.firstName} ${e.user.lastName}` === name) }); }); doc.end();
+    const periodDays = Math.max(1, Math.ceil((input.dateEnd.getTime() - input.dateStart.getTime()) / 86400000) + 1);
+    let page = 0;
+    names.forEach((name) => {
+      const employeeEntries = input.personal ? input.entries : input.entries.filter((e) => `${e.user.firstName} ${e.user.lastName}` === name);
+      for (let offset = 0; offset < periodDays; offset += 14) {
+        if (page) doc.addPage();
+        const start = addDays(input.dateStart, offset);
+        const end = new Date(Math.min(input.dateEnd.getTime(), addDays(start, 13).getTime()));
+        renderPage(doc, { ...input, dateStart: start, dateEnd: end, employeeName: name, entries: employeeEntries.filter((e) => e.workDate >= start && e.workDate <= end) });
+        page += 1;
+      }
+    });
+    doc.end();
   });
 }
