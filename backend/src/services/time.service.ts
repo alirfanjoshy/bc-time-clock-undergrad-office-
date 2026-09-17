@@ -8,6 +8,8 @@ import {
 } from '../repositories/timeEntry.repository.js';
 import { endOfDay, minutesBetween, startOfDay, startOfWeek } from '../utils/dates.js';
 import { MyEntriesQuery } from '../schemas/time.schema.js';
+import { createHash } from 'node:crypto';
+import { bindClockDevice, findClockDeviceByHash, findClockDeviceForUser } from '../repositories/timeEntry.repository.js';
 
 export async function getClockStatus(userId: string) {
   const now = new Date();
@@ -27,7 +29,19 @@ export async function getClockStatus(userId: string) {
   };
 }
 
-export async function clockIn(userId: string) {
+export async function clockIn(userId: string, deviceId: string, ipAddress?: string) {
+  const deviceHash = createHash('sha256').update(deviceId).digest('hex');
+  const [claimed, userDevice] = await Promise.all([
+    findClockDeviceByHash(deviceHash),
+    findClockDeviceForUser(userId),
+  ]);
+  if (claimed && claimed.userId !== userId) {
+    throw new AppError(403, 'CLOCK_DEVICE_IN_USE', 'This phone is already registered to another employee.');
+  }
+  if (userDevice && userDevice.deviceHash !== deviceHash) {
+    throw new AppError(403, 'NEW_CLOCK_DEVICE', 'Clock in from your registered phone. Ask an administrator to reset it if needed.');
+  }
+  if (!claimed && !userDevice) await bindClockDevice(userId, deviceHash, ipAddress);
   const existing = await findOpenEntryForUser(userId);
 
   if (existing) {

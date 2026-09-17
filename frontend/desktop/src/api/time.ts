@@ -12,10 +12,11 @@ export function getStatus(accessToken: string) {
   return apiRequest<TimeStatus>('/time/status', { accessToken });
 }
 
-export function clockIn(accessToken: string) {
+export function clockIn(accessToken: string, deviceId: string) {
   return apiRequest<TimeEntry>('/time/clock-in', {
     method: 'POST',
     accessToken,
+    body: JSON.stringify({ deviceId }),
   });
 }
 
