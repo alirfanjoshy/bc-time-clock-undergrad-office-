@@ -1,3 +1,5 @@
+import { withActivity } from './activity';
+
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000/api').replace(
   /\/$/,
   '',
@@ -24,7 +26,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiRequest<T>(
+async function requestJson<T>(
   path: string,
   options: RequestInit & { accessToken?: string } = {},
 ): Promise<T> {
@@ -52,7 +54,7 @@ export async function apiRequest<T>(
   return json?.data as T;
 }
 
-export async function apiBlob(
+async function requestBlob(
   path: string,
   options: RequestInit & { accessToken?: string } = {},
 ): Promise<{ blob: Blob; fileName: string }> {
@@ -84,4 +86,12 @@ export async function apiBlob(
     blob: await response.blob(),
     fileName: match?.[1] ?? 'timesheet-report.pdf',
   };
+}
+
+export function apiRequest<T>(path: string, options: RequestInit & { accessToken?: string } = {}): Promise<T> {
+  return withActivity(() => requestJson<T>(path, options));
+}
+
+export function apiBlob(path: string, options: RequestInit & { accessToken?: string } = {}): Promise<{ blob: Blob; fileName: string }> {
+  return withActivity(() => requestBlob(path, options));
 }

@@ -8,10 +8,14 @@ import "./styles/app.css";
 import "./styles/desktop.css";
 import { InstallApp } from "./components/InstallApp";
 
+import { CampusLoader, RequestLoader } from "./components/CampusLoader";
+
 function App() {
+  if (window.location.hash === "#loading-preview") return <CampusLoader />;
   return (
     <AuthProvider>
       <Root />
+      <RequestLoader />
       <InstallApp />
     </AuthProvider>
   );

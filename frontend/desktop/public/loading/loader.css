@@ -1,0 +1,19 @@
+.campus-loader{--bc-maroon:#821b36;min-height:100dvh;display:grid;place-items:center;background:#fffdf9;color:var(--bc-maroon);font-family:Inter,Arial,sans-serif;text-align:center;padding:24px;box-sizing:border-box}
+.campus-loader-overlay{position:fixed;inset:0;z-index:10000;pointer-events:none;background:rgba(255,253,249,.96);animation:campus-appear .2s ease-out}
+.campus-loader-card{width:min(100%,520px)}
+.campus-loader-brand{font-family:Georgia,serif;font-size:28px;letter-spacing:-.8px;line-height:1.2}
+.campus-loader-brand span{display:block;font:600 10px/1.5 Inter,Arial,sans-serif;letter-spacing:3px;margin-top:12px;color:#82746b}
+.campus-loader-scene{position:relative;width:100%;aspect-ratio:1.35;margin:8px auto 12px;overflow:hidden}
+.campus-loader-building{position:absolute;left:0;bottom:15%;width:100%;height:80%;object-fit:contain}
+.campus-loader-runner{position:absolute;width:31%;aspect-ratio:3/4;left:36%;bottom:0%;animation:campus-bounce .36s ease-in-out infinite alternate}
+.campus-loader-dog{width:100%;height:100%;background-image:url('./bulldog-run.png');background-size:400% 100%;background-repeat:no-repeat;animation:campus-stride .64s steps(4) infinite}
+.campus-loader-shadow{position:absolute;width:22%;height:3%;background:#5c363421;border-radius:50%;left:40%;bottom:7%;animation:campus-shadow .36s ease-in-out infinite alternate}
+.campus-loader-track{position:absolute;left:23%;right:23%;height:2px;bottom:8%;background:linear-gradient(90deg,transparent,#ded2be,transparent)}
+.campus-loader-speed{position:absolute;left:24%;bottom:18%;width:12%;display:grid;gap:7px}
+.campus-loader-speed i{height:3px;border-radius:8px;background:#efb443;animation:campus-speed .65s ease-out infinite}
+.campus-loader-speed i:nth-child(2){width:75%;animation-delay:.15s}.campus-loader-speed i:nth-child(3){width:50%;margin-left:auto;animation-delay:.3s}
+.campus-loader-title{font-family:Georgia,serif;font-size:22px;line-height:1.4;margin:0 0 8px}.campus-loader-caption{font-size:13px;color:#82746b;margin:0}
+.campus-loader-progress{width:90px;height:3px;border-radius:8px;background:#ede3d6;margin:22px auto 0;overflow:hidden}.campus-loader-progress span{display:block;width:40%;height:100%;background:#be8b31;animation:campus-progress 1.3s ease-in-out infinite}
+@keyframes campus-stride{to{background-position:133.333% 0}}@keyframes campus-bounce{to{transform:translateY(-5px) rotate(-2deg)}}@keyframes campus-shadow{to{transform:scaleX(.8);opacity:.55}}@keyframes campus-speed{from{transform:translateX(10px);opacity:0}40%{opacity:1}to{transform:translateX(-12px);opacity:0}}@keyframes campus-progress{from{transform:translateX(-100%)}to{transform:translateX(350%)}}@keyframes campus-appear{from{opacity:0}to{opacity:1}}
+@media(max-width:480px){.campus-loader{padding:22px}.campus-loader-brand{font-size:25px}.campus-loader-title{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.campus-loader *,.campus-loader{animation:none!important}.campus-loader-progress span{width:100%;opacity:.55}}

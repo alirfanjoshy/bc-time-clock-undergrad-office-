@@ -6,10 +6,27 @@
     <meta name="theme-color" content="#821b36" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/png" href="/icons/clock-192.png" />
+    <link rel="stylesheet" href="/loading/loader.css" />
     <title>BC Time Clock</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <section class="campus-loader" role="status" aria-label="Loading BC Time Clock">
+        <div class="campus-loader-card">
+          <div class="campus-loader-brand" aria-hidden="true">Brooklyn College<span>BC TIME CLOCK</span></div>
+          <div class="campus-loader-scene" aria-hidden="true">
+            <img class="campus-loader-building" src="/loading/campus.png" alt="" />
+            <div class="campus-loader-track"></div><div class="campus-loader-shadow"></div>
+            <div class="campus-loader-runner"><div class="campus-loader-dog"></div></div>
+            <div class="campus-loader-speed"><i></i><i></i><i></i></div>
+          </div>
+          <p class="campus-loader-title">Making every moment count…</p>
+          <p class="campus-loader-caption">Loading your time clock</p>
+          <div class="campus-loader-progress" aria-hidden="true"><span></span></div>
+        </div>
+      </section>
+      <noscript>Please enable JavaScript to use BC Time Clock.</noscript>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
