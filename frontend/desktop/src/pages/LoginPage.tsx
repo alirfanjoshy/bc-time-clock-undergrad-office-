@@ -1,3 +1,5 @@
+import { CampusWelcome } from '../components/CampusWelcome';
+import '../styles/welcome.css';
 import { AuthBrandPanel } from '../components/AuthBrandPanel';
 import { PasswordResetPage } from './PasswordResetPage';
 import { FormEvent, useState } from 'react';
@@ -7,6 +9,7 @@ import { UserRole } from '../types/api';
 
 export function LoginPage() {
   const { signIn, register, isSigningIn } = useAuth();
+  const [showForm, setShowForm] = useState(false);
   const [forgot, setForgot] = useState(false);
   const [mode, setMode] = useState<'signin' | 'create'>('signin');
   const [email, setEmail] = useState('');
@@ -20,6 +23,7 @@ export function LoginPage() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSigningIn) return;
     setError(null);
     try {
       if (mode === 'signin') {
@@ -39,11 +43,17 @@ export function LoginPage() {
     }
   }
 
+  if (!showForm) return <CampusWelcome
+    onLogIn={() => { setMode('signin'); setError(null); setShowForm(true); window.scrollTo(0, 0); }}
+    onSignUp={() => { setMode('create'); setError(null); setShowForm(true); window.scrollTo(0, 0); }}
+  />;
+
   if (forgot) return <PasswordResetPage initialEmail={email} onBack={() => setForgot(false)} />;
 
   return (
     <main className="login-page">
       <header className="login-topbar">
+        <button className="campus-return" type="button" disabled={isSigningIn} onClick={() => setShowForm(false)}>← Back to campus</button>
         <div className="brand-lockup">
           <span>Brooklyn<br />College</span>
           <i />
@@ -57,17 +67,19 @@ export function LoginPage() {
         <div className="auth-tabs">
           <button
             className={mode === 'signin' ? 'active' : ''}
-            onClick={() => setMode('signin')}
+            disabled={isSigningIn}
+            onClick={() => { setMode('signin'); setError(null); }}
             type="button"
           >
-            Sign In
+            Log in
           </button>
           <button
             className={mode === 'create' ? 'active' : ''}
-            onClick={() => setMode('create')}
+            disabled={isSigningIn}
+            onClick={() => { setMode('create'); setError(null); }}
             type="button"
           >
-            Create Account
+            Sign up
           </button>
         </div>
         {mode === 'create' ? (
@@ -111,6 +123,8 @@ export function LoginPage() {
           <span className="password-field">
             <input
               type={showPassword ? 'text' : 'password'}
+              required
+              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
@@ -127,9 +141,9 @@ export function LoginPage() {
         </label>
         {error ? <p className="error">{error}</p> : null}
         <button disabled={isSigningIn} type="submit">
-          {isSigningIn ? 'Saving...' : mode === 'signin' ? 'Sign In' : 'Create Account'}
+          {isSigningIn ? (mode === 'signin' ? 'Signing in…' : 'Creating account…') : mode === 'signin' ? 'Log in' : 'Sign up'}
         </button>
-        <button className="auth-back" type="button" onClick={() => setForgot(true)}>Forgot password?</button>
+        <button className="auth-back" type="button" disabled={isSigningIn} onClick={() => setForgot(true)}>Forgot password?</button>
         <small>
           Employee accounts can be created directly. Admin accounts require the office setup code.
         </small>
