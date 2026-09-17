@@ -21,8 +21,8 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   doc.fontSize(11).text('EMPLOYEE TIME SHEET', left, 50, { width, align: 'center' });
   doc.font('Helvetica').fontSize(9).text('BROOKLYN COLLEGE', left, 66, { width, align: 'center' });
   doc.font('Helvetica-Bold').fontSize(9).text('PAYROLL OFFICE', left, 80, { width, align: 'center' });
-  const infoY = 108;
-  doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY + 6, { width, align: 'center' });
+  const infoY = 116;
+  doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY - 13, { width, align: 'center' });
   doc.rect(left, infoY, width, 48).strokeColor('#9e9a92').stroke();
   doc.moveTo(left + 280, infoY).lineTo(left + 280, infoY + 48).stroke(); doc.moveTo(left, infoY + 24).lineTo(right, infoY + 24).stroke();
   doc.font('Helvetica').fontSize(8).text('DEPT#:  UNDERGRADUATE RECRUITMENT', left + 8, infoY + 29); doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 7); doc.text('RATE $:  __________', left + 8, infoY + 7); doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 29);
@@ -31,7 +31,8 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   const first = input.employeeName?.split(' ').slice(0, -1).join(' ') ?? ''; const last = input.employeeName?.split(' ').slice(-1)[0] ?? '';
   doc.font('Helvetica-Bold').text('LAST NAME:', left, detailY + 26); doc.font('Helvetica').text(last || '________________', left + 64, detailY + 26); doc.font('Helvetica-Bold').text('FIRST NAME:', left + 250, detailY + 26); doc.font('Helvetica').text(first || '________________', left + 319, detailY + 26);
   doc.font('Helvetica-Bold').text('EMPL ID#:', left, detailY + 42); doc.font('Helvetica').text('________________', left + 64, detailY + 42); doc.font('Helvetica-Bold').text('DEPARTMENT:', left + 250, detailY + 42); doc.font('Helvetica').text('Undergraduate Recruitment', left + 319, detailY + 42);
-  const widths = [22, 45, 50, 48, 58, 48, 62, 50, 50, 44, 50, 109];
+  // Keep every column inside the 536pt printable width, including Signature.
+  const widths = [20, 42, 46, 43, 52, 43, 57, 42, 42, 40, 44, 65];
   const headers = ['No.', 'Day', 'Date', 'Time\nIn', 'Meal\nPeriod', 'Time\nOut', '#Hours\nWorked', 'Sick\nHours', 'Annual\nHours', 'Total', 'Shift\nHours', 'Signature'];
   let y = 238; let x = left; headers.forEach((h, i) => { cell(doc, x, y, widths[i], 32, h, true); x += widths[i]; });
   const count = Math.max(7, Math.min(14, Math.ceil((input.dateEnd.getTime() - input.dateStart.getTime()) / 86400000) + 1)); let total = 0;
