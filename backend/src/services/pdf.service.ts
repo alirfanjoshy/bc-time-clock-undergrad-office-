@@ -28,9 +28,9 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   doc.moveTo(left, infoY + 56).lineTo(right, infoY + 56).stroke();
   doc.moveTo(left + 280, infoY + 20).lineTo(left + 280, infoY + 72).stroke();
   doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY + 6, { width, align: 'center' });
-  doc.font('Helvetica').fontSize(8).text('CA  [ ]     SA  [ ]', left + 8, infoY + 25);
+  doc.font('Helvetica').fontSize(8).text('CA  [X]     SA  [ ]', left + 8, infoY + 25);
   doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 25);
-  doc.text('DEPT#:  UNDERGRADUATE RECRUITMENT', left + 8, infoY + 43);
+  doc.text('DEPT#:  ____________________', left + 8, infoY + 43);
   doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 43);
   doc.text('RATE $:  __________', left + 8, infoY + 61);
   doc.text('BALANCE HOURS:  __________', left + 288, infoY + 61);
@@ -38,7 +38,7 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   doc.font('Helvetica-Bold').text('PAYROLL PERIOD:', left + 110, detailY); doc.font('Helvetica').text(`${formatDate(input.dateStart)} - ${formatDate(input.dateEnd)}`, left + 210, detailY);
   const first = input.employeeName?.split(' ').slice(0, -1).join(' ') ?? ''; const last = input.employeeName?.split(' ').slice(-1)[0] ?? '';
   doc.font('Helvetica-Bold').text('LAST NAME:', left, detailY + 26); doc.font('Helvetica').text(last || '________________', left + 64, detailY + 26); doc.font('Helvetica-Bold').text('FIRST NAME:', left + 250, detailY + 26); doc.font('Helvetica').text(first || '________________', left + 319, detailY + 26);
-  doc.font('Helvetica-Bold').text('EMPL ID#:', left, detailY + 42); doc.font('Helvetica').text('________________', left + 64, detailY + 42); doc.font('Helvetica-Bold').text('DEPARTMENT:', left + 250, detailY + 42); doc.font('Helvetica').text('Undergraduate Recruitment', left + 319, detailY + 42);
+  doc.font('Helvetica-Bold').text('EMPL ID#:', left, detailY + 42); doc.font('Helvetica').text('________________', left + 64, detailY + 42); doc.font('Helvetica-Bold').text('DEPARTMENT:', left + 250, detailY + 42); doc.font('Helvetica').text('Admissions', left + 319, detailY + 42);
   // Keep every column inside the 536pt printable width, including Signature.
   const widths = [20, 42, 46, 43, 52, 43, 57, 42, 42, 40, 44, 65];
   const headers = ['No.', 'Day', 'Date', 'Time\nIn', 'Meal\nPeriod', 'Time\nOut', '#Hours\nWorked', 'Sick\nHours', 'Annual\nHours', 'Total', 'Shift\nHours', 'Signature'];
