@@ -17,7 +17,7 @@ function cell(doc: PDFKit.PDFDocument, x: number, y: number, w: number, h: numbe
 function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: Date; entries: TimeEntryWithUser[]; employeeName?: string; supervisorName?: string; personal?: boolean }) {
   const left = 38; const right = 574; const width = right - left;
   doc.rect(0, 0, 612, 792).fill(paper);
-  doc.fillColor(maroon).font('Helvetica-Bold').fontSize(12).text('COLLEGE ASSISTANT / STUDENT AIDE', left, 34, { width, align: 'center' });
+  doc.fillColor('#111111').font('Helvetica-Bold').fontSize(12).text('COLLEGE ASSISTANT / STUDENT AIDE', left, 34, { width, align: 'center' });
   doc.fontSize(11).text('EMPLOYEE TIME SHEET', left, 50, { width, align: 'center' });
   doc.font('Helvetica').fontSize(9).text('BROOKLYN COLLEGE', left, 66, { width, align: 'center' });
   doc.font('Helvetica-Bold').fontSize(9).text('PAYROLL OFFICE', left, 80, { width, align: 'center' });
@@ -56,7 +56,8 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
     weekTotal += mins; row += 1;
     if (i === 6 || i === 13) {
       const subtotalY = y + 32 + row * 21; x = left;
-      widths.forEach((w, col) => { cell(doc, x, subtotalY, w, 23, col === 1 ? 'WEEK SUB-TOTAL' : col === 6 || col === 9 ? (weekTotal && weekTotal % 60 === 0 ? String(weekTotal / 60) : formatMinutes(weekTotal)) : '', true, col === 1 ? 'left' : 'center'); x += w; });
+      widths.forEach((w, col) => { cell(doc, x, subtotalY, w, 23, col === 6 || col === 9 ? (weekTotal && weekTotal % 60 === 0 ? String(weekTotal / 60) : formatMinutes(weekTotal)) : '', true, 'center'); x += w; });
+      doc.font('Helvetica-Bold').fontSize(7).fillColor('#242424').text('WEEK SUB-TOTAL', left + 6, subtotalY + 7, { width: widths.slice(0, 6).reduce((sum, value) => sum + value, 0) - 12, align: 'left', lineBreak: false });
       row += 23 / 21; weekTotal = 0;
     }
   }
