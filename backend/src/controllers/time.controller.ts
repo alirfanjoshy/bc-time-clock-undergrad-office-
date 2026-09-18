@@ -7,9 +7,7 @@ export async function getStatus(req: Request, res: Response) {
 }
 
 export async function clockIn(req: Request, res: Response) {
-  const deviceId = typeof req.body?.deviceId === 'string' ? req.body.deviceId : '';
-  if (!deviceId) return res.status(400).json({ error: { code: 'CLOCK_DEVICE_REQUIRED', message: 'A registered phone is required to clock in.' } });
-  const entry = await timeService.clockIn(req.user!.id, deviceId, req.ip);
+  const entry = await timeService.clockIn(req.user!.id);
   res.status(201).json({ data: entry });
 }
 

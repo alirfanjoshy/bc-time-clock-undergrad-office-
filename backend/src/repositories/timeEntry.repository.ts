@@ -38,18 +38,6 @@ export function createClockInEntry(userId: string, timestamp: Date, workDate: Da
   });
 }
 
-export function findClockDeviceByHash(deviceHash: string) {
-  return prisma.clockDevice.findUnique({ where: { deviceHash } });
-}
-
-export function findClockDeviceForUser(userId: string) {
-  return prisma.clockDevice.findUnique({ where: { userId } });
-}
-
-export function bindClockDevice(userId: string, deviceHash: string, firstIp?: string) {
-  return prisma.clockDevice.create({ data: { userId, deviceHash, firstIp } });
-}
-
 export function closeTimeEntry(id: string, clockOut: Date, totalMinutes: number) {
   return prisma.timeEntry.update({
     where: { id },

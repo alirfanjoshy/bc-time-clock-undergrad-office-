@@ -36,13 +36,7 @@ export function PersonalClockCard({ onChanged }: { onChanged?: () => void } = {}
       if (status.isClockedIn) {
         await clockOut(accessToken);
       } else {
-        const storageKey = 'bc-time-clock-device-id';
-        let deviceId = window.localStorage.getItem(storageKey);
-        if (!deviceId) {
-          deviceId = crypto.randomUUID();
-          window.localStorage.setItem(storageKey, deviceId);
-        }
-        await clockIn(accessToken, deviceId);
+        await clockIn(accessToken);
       }
       await load();
       onChanged?.();

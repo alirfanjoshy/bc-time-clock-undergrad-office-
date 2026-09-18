@@ -66,23 +66,10 @@ model User {
   auditLogsTargeted AuditLog[]     @relation("AuditTarget")
   reportExports     ReportExport[]
   refreshTokens     RefreshToken[]
-  clockDevice       ClockDevice?
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
   @@map("users")
-}
-
-model ClockDevice {
-  id         String   @id @default(uuid())
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  deviceHash String   @unique
-  firstIp    String?
-  boundAt    DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("clock_devices")
 }
 
 model TimeEntry {
