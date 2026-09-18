@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { clockIn, clockOut, getStatus, TimeStatus } from '../api/time';
 import { useAuth } from '../auth/AuthContext';
 import { formatElapsedSeconds, formatMinutes, formatTime } from '../utils/time';
+import { ApiError } from '../api/client';
 
 export function PersonalClockCard({ onChanged }: { onChanged?: () => void } = {}) {
   const { accessToken } = useAuth();
@@ -48,8 +49,8 @@ export function PersonalClockCard({ onChanged }: { onChanged?: () => void } = {}
       }
       await load();
       onChanged?.();
-    } catch {
-      setError('Clock action failed.');
+    } catch (caught) {
+      setError(caught instanceof ApiError ? caught.message : 'Clock action failed. Please try again.');
     } finally {
       setSaving(false);
     }
