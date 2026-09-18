@@ -28,7 +28,11 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
   doc.moveTo(left, infoY + 56).lineTo(right, infoY + 56).stroke();
   doc.moveTo(left + 280, infoY + 20).lineTo(left + 280, infoY + 72).stroke();
   doc.fillColor('#262626').font('Helvetica-Bold').fontSize(8).text('TO BE COMPLETED BY SUPERVISOR', left, infoY + 6, { width, align: 'center' });
-  doc.font('Helvetica').fontSize(8).text('CA  [X]     SA  [ ]', left + 8, infoY + 25);
+  doc.font('Helvetica').fontSize(8).text('CA', left + 8, infoY + 25);
+  doc.rect(left + 25, infoY + 24, 9, 9).strokeColor('#262626').lineWidth(0.7).stroke();
+  doc.moveTo(left + 27, infoY + 28).lineTo(left + 30, infoY + 31).lineTo(left + 34, infoY + 25).strokeColor('#262626').lineWidth(1).stroke();
+  doc.text('SA', left + 96, infoY + 25);
+  doc.rect(left + 113, infoY + 24, 9, 9).strokeColor('#262626').lineWidth(0.7).stroke();
   doc.text('APPOINTED HOURS:  __________', left + 288, infoY + 25);
   doc.text('DEPT#:  ____________________', left + 8, infoY + 43);
   doc.text('TOTAL HOURS USED TO DATE:  __________', left + 288, infoY + 43);
