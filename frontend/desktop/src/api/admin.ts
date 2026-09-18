@@ -9,6 +9,10 @@ export function getUsers(accessToken: string) {
   return apiRequest<User[]>('/admin/users', { accessToken });
 }
 
+export function resetClockDevice(accessToken: string, userId: string) {
+  return apiRequest<void>(`/admin/users/${userId}/clock-device`, { method: 'DELETE', accessToken });
+}
+
 export function getTimeEntries(accessToken: string) {
   return apiRequest<TimeEntry[]>('/admin/time-entries', { accessToken });
 }

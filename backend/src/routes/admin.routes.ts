@@ -15,6 +15,7 @@ adminRoutes.use(authorize(UserRole.ADMIN));
 adminRoutes.get('/dashboard', adminController.getDashboard);
 adminRoutes.get('/users', adminController.getUsers);
 adminRoutes.post('/users', validateRequest(createUserSchema), adminController.createUser);
+adminRoutes.delete('/users/:userId/clock-device', adminController.resetClockDevice);
 adminRoutes.get(
   '/time-entries',
   validateRequest(adminEntriesQuerySchema),

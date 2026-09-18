@@ -39,6 +39,8 @@ export function PersonalClockCard({ onChanged }: { onChanged?: () => void } = {}
         const storageKey = 'bc-time-clock-device-id';
         let deviceId = window.localStorage.getItem(storageKey);
         if (!deviceId) {
+          const confirmed = window.confirm('Register this phone for your time clock? This phone will be required for future clock-ins.');
+          if (!confirmed) return;
           deviceId = crypto.randomUUID();
           window.localStorage.setItem(storageKey, deviceId);
         }

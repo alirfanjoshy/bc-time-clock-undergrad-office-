@@ -5,6 +5,7 @@ import {
   listAuditLogs,
   listTimeEntries,
   listUsers,
+  resetEmployeeClockDevice,
 } from '../services/admin.service.js';
 
 export async function getUsers(_req: Request, res: Response) {
@@ -30,4 +31,9 @@ export async function getTimeEntries(req: Request, res: Response) {
 export async function getAuditLogs(_req: Request, res: Response) {
   const logs = await listAuditLogs();
   res.json({ data: logs });
+}
+
+export async function resetClockDevice(req: Request, res: Response) {
+  await resetEmployeeClockDevice(String(req.params.userId));
+  res.status(204).send();
 }
