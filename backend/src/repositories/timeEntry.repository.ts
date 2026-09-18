@@ -50,10 +50,6 @@ export function bindClockDevice(userId: string, deviceHash: string, firstIp?: st
   return prisma.clockDevice.create({ data: { userId, deviceHash, firstIp } });
 }
 
-export function resetClockDevice(userId: string) {
-  return prisma.clockDevice.deleteMany({ where: { userId } });
-}
-
 export function closeTimeEntry(id: string, clockOut: Date, totalMinutes: number) {
   return prisma.timeEntry.update({
     where: { id },

@@ -7,14 +7,9 @@ import { createUser, findDepartmentById, findSafeUsers } from '../repositories/u
 import { recordAuditLog } from './audit.service.js';
 import { endOfDay, formatMinutes, minutesBetween, startOfDay } from '../utils/dates.js';
 import { AdminEntriesQuery } from '../schemas/adminTime.schema.js';
-import { resetClockDevice } from '../repositories/timeEntry.repository.js';
 
 export function listUsers() {
   return findSafeUsers();
-}
-
-export async function resetEmployeeClockDevice(userId: string) {
-  await resetClockDevice(userId);
 }
 
 export async function createUserAsAdmin(input: CreateUserInput, actorUserId: string, ipAddress?: string) {
