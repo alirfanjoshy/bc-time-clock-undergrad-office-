@@ -25,3 +25,9 @@ services:
         generateValue: true
       - key: ADMIN_REGISTRATION_CODE
         generateValue: true
+      - key: MAIL_FROM
+        sync: false
+      - key: PASSWORD_RESET_URL
+        value: https://bc-time-clock.onrender.com/
+      - key: RESEND_API_KEY
+        sync: false
