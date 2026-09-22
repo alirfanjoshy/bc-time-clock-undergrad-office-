@@ -56,12 +56,14 @@ function renderPage(doc: PDFKit.PDFDocument, input: { dateStart: Date; dateEnd: 
     weekTotal += mins; row += 1;
     if (i === 6 || i === 13) {
       const subtotalY = y + 32 + row * 21; x = left;
-      widths.forEach((w, col) => { cell(doc, x, subtotalY, w, 23, col === 6 || col === 9 ? (weekTotal && weekTotal % 60 === 0 ? String(weekTotal / 60) : formatMinutes(weekTotal)) : '', true, 'center'); x += w; });
-      doc.font('Helvetica-Bold').fontSize(7).fillColor('#242424').text('WEEK SUB-TOTAL', left + 6, subtotalY + 7, { width: widths.slice(0, 6).reduce((sum, value) => sum + value, 0) - 12, align: 'left', lineBreak: false });
+      const mergedLabelWidth = widths[0] + widths[1] + widths[2];
+      cell(doc, left, subtotalY, mergedLabelWidth, 23, 'WEEK SUB-TOTAL', true, 'left');
+      x = left + mergedLabelWidth;
+      widths.slice(3).forEach((w, index) => { const col = index + 3; cell(doc, x, subtotalY, w, 23, col === 6 || col === 9 ? (weekTotal && weekTotal % 60 === 0 ? String(weekTotal / 60) : formatMinutes(weekTotal)) : '', true, 'center'); x += w; });
       row += 23 / 21; weekTotal = 0;
     }
   }
-  const totalY = y + 32 + row * 21; x = left; widths.forEach((w, i) => { cell(doc, x, totalY, w, 27, i === 1 ? 'TOTAL HOURS' : i === 6 || i === 9 ? (total && total % 60 === 0 ? String(total / 60) : formatMinutes(total)) : '', true, i === 1 ? 'left' : 'center'); x += w; });
+  const totalY = y + 32 + row * 21; const mergedLabelWidth = widths[0] + widths[1] + widths[2]; cell(doc, left, totalY, mergedLabelWidth, 27, 'TOTAL HOURS', true, 'left'); x = left + mergedLabelWidth; widths.slice(3).forEach((w, index) => { const col = index + 3; cell(doc, x, totalY, w, 27, col === 6 || col === 9 ? (total && total % 60 === 0 ? String(total / 60) : formatMinutes(total)) : '', true, 'center'); x += w; });
   const footerY = totalY + 53; doc.fillColor('#242424').font('Helvetica').fontSize(8).text('I certify that the hours above have been worked. Sick and/or annual leave hours have to be taken as indicated.', left, footerY, { width, align: 'center' }); doc.text('All computations are correct and there are sufficient funds in my allocation to pay this expenditure.', left, footerY + 12, { width, align: 'center' });
   doc.moveTo(left, footerY + 55).lineTo(left + 170, footerY + 55).strokeColor('#777').stroke(); doc.moveTo(left + 195, footerY + 55).lineTo(left + 365, footerY + 55).stroke(); doc.moveTo(left + 390, footerY + 55).lineTo(right, footerY + 55).stroke();
   doc.fontSize(7).text(input.employeeName ?? 'Prepared by', left, footerY + 60, { width: 170, align: 'center' }); doc.text(input.supervisorName ?? "Department's Extension", left + 195, footerY + 60, { width: 170, align: 'center' }); doc.text('Chairperson/Authorized Representative', left + 390, footerY + 60, { width: 184, align: 'center' });
