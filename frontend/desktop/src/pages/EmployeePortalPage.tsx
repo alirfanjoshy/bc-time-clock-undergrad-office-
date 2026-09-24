@@ -29,6 +29,7 @@ import { TimesheetsPage } from "./TimesheetsPage";
 import { AuditLogsPage } from "./AuditLogsPage";
 import { TimeEntry } from "../types/api";
 import { formatMinutes, formatTime } from "../utils/time";
+import { enableMfa, setupMfa } from "../api/auth";
 
 type Tab =
   | "home"
@@ -58,6 +59,11 @@ export function EmployeePortalPage() {
   const [error, setError] = useState("");
   const [sharing, setSharing] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(() => user ? window.localStorage.getItem(`bc-avatar-${user.id}`) : null);
+  const [mfaSetup, setMfaSetup] = useState<{ qrCode: string; secret: string } | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaMessage, setMfaMessage] = useState('');
+  async function beginMfa() { if (!accessToken) return; setMfaSetup(await setupMfa(accessToken)); setMfaMessage(''); }
+  async function confirmMfa() { if (!accessToken) return; try { await enableMfa(accessToken, mfaCode); setMfaMessage('Authenticator enabled. You will enter a code at your next login.'); } catch { setMfaMessage('That code is not valid. Try the current six-digit code.'); } }
   const today = new Date();
   const [dateStart, setDateStart] = useState(
     dateKey(new Date(today.getFullYear(), today.getMonth(), 1)),
@@ -477,6 +483,7 @@ export function EmployeePortalPage() {
                   EMPLID: {user?.employeeId}
                 </p>
               </div>
+              {!mfaSetup ? <button type="button" onClick={() => void beginMfa()}>Set up Microsoft Authenticator</button> : <div className="mfa-setup"><p>Scan this QR code in Microsoft Authenticator.</p><img src={mfaSetup.qrCode} alt="Authenticator setup QR code" /><small>Or enter this key: {mfaSetup.secret}</small><input inputMode="numeric" maxLength={6} placeholder="6-digit code" value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, ''))} /><button type="button" onClick={() => void confirmMfa()}>Confirm authenticator</button><p>{mfaMessage}</p></div>}
             </div>
             <OfficeLocationCard />
             <button className="mobile-signout" onClick={signOut}>

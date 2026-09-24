@@ -32,3 +32,5 @@ export function forgotPassword(email: string) {
 export function resetPassword(token: string, password: string) {
   return apiRequest<{ message: string }>('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, password }) });
 }
+export function setupMfa(accessToken: string) { return apiRequest<{ secret: string; uri: string; qrCode: string }>('/auth/mfa/setup', { accessToken }); }
+export function enableMfa(accessToken: string, code: string) { return apiRequest<{ enabled: boolean }>('/auth/mfa/enable', { method: 'POST', accessToken, body: JSON.stringify({ code }) }); }
