@@ -192,7 +192,7 @@ export function EmployeePortalPage() {
         </nav>
         <div className="desktop-nav-footer">
           <div className="desktop-account">
-            <img src={avatarImage} alt="" className="desktop-account-avatar" />
+            <img src={avatarImage} alt="" className={`desktop-account-avatar ${avatar ? '' : 'default-bulldog-avatar'}`} />
             <div>
               <strong>
                 {user?.firstName} {user?.lastName}
@@ -238,7 +238,7 @@ export function EmployeePortalPage() {
           onClick={() => setTab("profile")}
           aria-label="Open Profile"
         >
-          <img src={avatarImage} alt="Profile" className="header-avatar-image" />
+          <img src={avatarImage} alt="Profile" className={`header-avatar-image ${avatar ? '' : 'default-bulldog-avatar'}`} />
         </button>
       </header>
       <div className="desktop-workspace">
@@ -451,7 +451,8 @@ export function EmployeePortalPage() {
             </div>
             <div className="mobile-profile-card">
               <label className="mobile-profile-avatar profile-avatar-upload" title="Choose profile picture">
-                <img src={avatarImage} alt="Profile" />
+                <img src={avatarImage} alt="Profile" className={avatar ? '' : 'default-bulldog-avatar'} />
+                <span>Change profile picture</span>
                 <input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseAvatar} />
               </label>
               <h2>
