@@ -62,8 +62,8 @@ export function EmployeePortalPage() {
   const [mfaSetup, setMfaSetup] = useState<{ qrCode: string; secret: string } | null>(null);
   const [mfaCode, setMfaCode] = useState('');
   const [mfaMessage, setMfaMessage] = useState('');
-  async function beginMfa() { if (!accessToken) return; setMfaSetup(await setupMfa(accessToken)); setMfaMessage(''); }
-  async function confirmMfa() { if (!accessToken) return; try { await enableMfa(accessToken, mfaCode); setMfaMessage('Authenticator enabled. You will enter a code at your next login.'); } catch { setMfaMessage('That code is not valid. Try the current six-digit code.'); } }
+  async function beginMfa() { if (!accessToken || mfaSetup) return; setMfaSetup(await setupMfa(accessToken)); setMfaMessage(''); }
+  async function confirmMfa() { if (!accessToken) return; try { await enableMfa(accessToken, mfaCode); window.location.reload(); } catch { setMfaMessage('That code is not valid. Try the current six-digit code.'); } }
   const today = new Date();
   const [dateStart, setDateStart] = useState(
     dateKey(new Date(today.getFullYear(), today.getMonth(), 1)),
@@ -483,7 +483,7 @@ export function EmployeePortalPage() {
                   EMPLID: {user?.employeeId}
                 </p>
               </div>
-              {!user?.totpEnabled && (!mfaSetup ? <button type="button" onClick={() => void beginMfa()}>Set up Microsoft Authenticator</button> : <div className="mfa-setup"><p>Scan this QR code in Microsoft Authenticator.</p><img src={mfaSetup.qrCode} alt="Authenticator setup QR code" /><small>Or enter this key: {mfaSetup.secret}</small><input inputMode="numeric" maxLength={6} placeholder="6-digit code" value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, ''))} /><button type="button" onClick={() => void confirmMfa()}>Confirm authenticator</button><p>{mfaMessage}</p></div>)}
+              {!user?.totpEnabled && (!mfaSetup ? <div className="security-setup"><strong>Account security</strong><p>Set up Microsoft Authenticator once. It will be required whenever you sign in.</p><button type="button" onClick={() => void beginMfa()}>Set up once</button></div> : <div className="mfa-setup"><strong>Finish account security setup</strong><p>Scan this QR code in Microsoft Authenticator, then enter the six-digit code.</p><img src={mfaSetup.qrCode} alt="Authenticator setup QR code" /><small>Or enter this key: {mfaSetup.secret}</small><input inputMode="numeric" maxLength={6} placeholder="6-digit code" value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, ''))} /><button type="button" onClick={() => void confirmMfa()}>Confirm setup</button><p>{mfaMessage}</p></div>)}
             </div>
             <OfficeLocationCard />
             <button className="mobile-signout" onClick={signOut}>
