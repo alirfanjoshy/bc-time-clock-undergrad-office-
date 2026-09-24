@@ -483,7 +483,7 @@ export function EmployeePortalPage() {
                   EMPLID: {user?.employeeId}
                 </p>
               </div>
-              {user?.totpEnabled ? <p className="mfa-enabled">Microsoft Authenticator is enabled. A code is required at login.</p> : !mfaSetup ? <button type="button" onClick={() => void beginMfa()}>Set up Microsoft Authenticator</button> : <div className="mfa-setup"><p>Scan this QR code in Microsoft Authenticator.</p><img src={mfaSetup.qrCode} alt="Authenticator setup QR code" /><small>Or enter this key: {mfaSetup.secret}</small><input inputMode="numeric" maxLength={6} placeholder="6-digit code" value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, ''))} /><button type="button" onClick={() => void confirmMfa()}>Confirm authenticator</button><p>{mfaMessage}</p></div>}
+              {!user?.totpEnabled && (!mfaSetup ? <button type="button" onClick={() => void beginMfa()}>Set up Microsoft Authenticator</button> : <div className="mfa-setup"><p>Scan this QR code in Microsoft Authenticator.</p><img src={mfaSetup.qrCode} alt="Authenticator setup QR code" /><small>Or enter this key: {mfaSetup.secret}</small><input inputMode="numeric" maxLength={6} placeholder="6-digit code" value={mfaCode} onChange={(event) => setMfaCode(event.target.value.replace(/\D/g, ''))} /><button type="button" onClick={() => void confirmMfa()}>Confirm authenticator</button><p>{mfaMessage}</p></div>)}
             </div>
             <OfficeLocationCard />
             <button className="mobile-signout" onClick={signOut}>
