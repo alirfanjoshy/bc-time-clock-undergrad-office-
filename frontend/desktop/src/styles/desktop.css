@@ -730,6 +730,24 @@
     font-size: 12px;
   }
 }
+
+@media (min-width: 900px) {
+  .desktop-navigation { box-shadow: 8px 0 24px rgba(9, 18, 28, .08); }
+  .desktop-brand { padding-top: 28px; }
+  .desktop-navigation nav button { transition: background .18s ease, transform .18s ease; }
+  .desktop-navigation nav button.active { box-shadow: inset 3px 0 #e4a52d; }
+  .mobile-web-header { box-shadow: 0 1px 10px rgba(17, 29, 43, .04); }
+  .desktop-workspace { padding-top: 38px; }
+  .mobile-web-greeting { box-shadow: 0 16px 34px rgba(16, 29, 43, .12); }
+  .mobile-web-content .time-clock-card, .desktop-recent-panel, .desktop-week-list, .mobile-week-total, .mobile-profile-card, .desktop-profile .office-location, .mobile-web-app .panel, .mobile-web-app .metric-card { box-shadow: 0 8px 22px rgba(24, 38, 52, .045); }
+  .mobile-web-content .time-clock-card > button.clock-in-action { background: #8f1237; box-shadow: 0 8px 16px rgba(143, 18, 55, .18); }
+  .mobile-web-content .time-clock-card > button.clock-in-action:hover { background: #760d2d; transform: translateY(-1px); }
+  .desktop-shortcut { box-shadow: 0 8px 20px rgba(143, 18, 55, .06); }
+  .mobile-profile-card, .desktop-recent-panel, .desktop-week-list, .mobile-week-total { overflow: hidden; }
+  .desktop-page-heading p { max-width: 620px; }
+  .mobile-web-app button { transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+  .mobile-web-app button:hover:not(:disabled) { transform: translateY(-1px); }
+}
 @media (min-width: 900px) and (max-width: 1199px) {
   .mobile-web-app,
   .mobile-web-app.admin-workspace {
