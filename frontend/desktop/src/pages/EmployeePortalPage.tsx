@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import {
   BarChart3,
   Building2,
@@ -57,6 +57,7 @@ export function EmployeePortalPage() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [error, setError] = useState("");
   const [sharing, setSharing] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(() => user ? window.localStorage.getItem(`bc-avatar-${user.id}`) : null);
   const today = new Date();
   const [dateStart, setDateStart] = useState(
     dateKey(new Date(today.getFullYear(), today.getMonth(), 1)),
@@ -113,6 +114,14 @@ export function EmployeePortalPage() {
     }
   }
   const initials = `${user?.firstName[0] ?? ""}${user?.lastName[0] ?? ""}`;
+  function chooseAvatar(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file || !user || file.size > 2 * 1024 * 1024) return;
+    const reader = new FileReader();
+    reader.onload = () => { const value = String(reader.result); window.localStorage.setItem(`bc-avatar-${user.id}`, value); setAvatar(value); };
+    reader.readAsDataURL(file);
+  }
+  const avatarImage = avatar ?? `${import.meta.env.BASE_URL}loading/bulldog-run.png`;
   const tabs = admin
     ? [
         { key: "dashboard" as Tab, label: "Dashboard", icon: BarChart3 },
@@ -183,7 +192,7 @@ export function EmployeePortalPage() {
         </nav>
         <div className="desktop-nav-footer">
           <div className="desktop-account">
-            <span>{initials}</span>
+            <img src={avatarImage} alt="" className="desktop-account-avatar" />
             <div>
               <strong>
                 {user?.firstName} {user?.lastName}
@@ -229,7 +238,7 @@ export function EmployeePortalPage() {
           onClick={() => setTab("profile")}
           aria-label="Open Profile"
         >
-          {initials}
+          <img src={avatarImage} alt="Profile" className="header-avatar-image" />
         </button>
       </header>
       <div className="desktop-workspace">
@@ -441,7 +450,10 @@ export function EmployeePortalPage() {
               </div>
             </div>
             <div className="mobile-profile-card">
-              <div className="mobile-profile-avatar">{initials}</div>
+              <label className="mobile-profile-avatar profile-avatar-upload" title="Choose profile picture">
+                <img src={avatarImage} alt="Profile" />
+                <input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseAvatar} />
+              </label>
               <h2>
                 {user?.firstName} {user?.lastName}
               </h2>
