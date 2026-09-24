@@ -6,7 +6,6 @@ import { EmployeePortalPage } from "./pages/EmployeePortalPage";
 import { PasswordResetPage } from "./pages/PasswordResetPage";
 import "./styles/app.css";
 import "./styles/desktop.css";
-import { InstallApp } from "./components/InstallApp";
 
 import { CampusLoader, RequestLoader } from "./components/CampusLoader";
 
@@ -16,7 +15,6 @@ function App() {
     <AuthProvider>
       <Root />
       <RequestLoader />
-      <InstallApp />
     </AuthProvider>
   );
 }
