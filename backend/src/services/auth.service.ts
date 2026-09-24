@@ -37,6 +37,7 @@ function toAuthUser(user: {
   role: 'EMPLOYEE' | 'ADMIN';
   departmentId: string;
   isActive: boolean;
+  totpEnabled: boolean;
 }) {
   return {
     id: user.id,
@@ -47,6 +48,7 @@ function toAuthUser(user: {
     role: user.role,
     departmentId: user.departmentId,
     isActive: user.isActive,
+    totpEnabled: user.totpEnabled,
   };
 }
 

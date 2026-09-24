@@ -10,6 +10,7 @@ export const safeUserSelect = {
   role: true,
   departmentId: true,
   isActive: true,
+  totpEnabled: true,
   createdAt: true,
   updatedAt: true,
   department: {

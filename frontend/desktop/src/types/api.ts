@@ -14,6 +14,7 @@ export type User = {
   role: UserRole;
   departmentId: string;
   isActive: boolean;
+  totpEnabled: boolean;
   department?: Department;
 };
 
