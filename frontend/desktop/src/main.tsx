@@ -8,6 +8,7 @@ import "./styles/app.css";
 import "./styles/desktop.css";
 
 import { CampusLoader, RequestLoader } from "./components/CampusLoader";
+import { InstallApp } from "./components/InstallApp";
 
 function App() {
   if (window.location.hash === "#loading-preview") return <CampusLoader />;
@@ -41,7 +42,7 @@ function Root() {
         onBack={() => setResetToken(undefined)}
       />
     );
-  if (!user) return <LoginPage />;
+  if (!user) return <><LoginPage /><InstallApp /></>;
   return <EmployeePortalPage key={user.id} />;
 }
 
