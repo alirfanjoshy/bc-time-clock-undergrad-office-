@@ -121,7 +121,7 @@ export function EmployeePortalPage() {
     reader.onload = () => { const value = String(reader.result); window.localStorage.setItem(`bc-avatar-${user.id}`, value); setAvatar(value); };
     reader.readAsDataURL(file);
   }
-  const avatarImage = avatar ?? `${import.meta.env.BASE_URL}loading/bulldog-run.png`;
+  const avatarImage = avatar ?? `${import.meta.env.BASE_URL}loading/bulldog-face.png`;
   const tabs = admin
     ? [
         { key: "dashboard" as Tab, label: "Dashboard", icon: BarChart3 },
