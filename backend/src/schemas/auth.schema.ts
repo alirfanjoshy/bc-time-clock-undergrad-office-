@@ -17,6 +17,7 @@ export const loginSchema = z.object({
   body: z.object({
     email: z.string().trim().email().toLowerCase(),
     password: z.string().min(1).max(128),
+    authenticatorCode: z.string().regex(/^\d{6}$/).optional(),
   }),
 });
 

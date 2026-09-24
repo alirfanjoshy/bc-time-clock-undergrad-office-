@@ -59,6 +59,8 @@ model User {
   departmentId      String
   department        Department     @relation(fields: [departmentId], references: [id])
   isActive          Boolean        @default(true)
+  totpSecret        String?
+  totpEnabled       Boolean        @default(false)
   timeEntries       TimeEntry[]    @relation("UserTimeEntries")
   editedTimeEntries TimeEntry[]    @relation("EditedTimeEntries")
   timesheets        Timesheet[]

@@ -21,6 +21,7 @@ import {
   findUserWithPasswordByEmail,
 } from '../repositories/user.repository.js';
 import { LoginInput, RefreshInput, RegisterInput } from '../schemas/auth.schema.js';
+import { verify as verifyMfa } from './mfa.service.js';
 
 type RequestMeta = {
   ipAddress?: string;
@@ -112,6 +113,8 @@ export async function login(input: LoginInput, meta: RequestMeta) {
   if (!user.isActive) {
     throw new AppError(403, 'ACCOUNT_INACTIVE', 'This account is inactive.');
   }
+
+  if (user.totpEnabled) verifyMfa(user.totpSecret, input.authenticatorCode);
 
   const tokens = await issueTokens(user, meta);
 

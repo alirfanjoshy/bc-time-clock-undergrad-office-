@@ -20,6 +20,7 @@ export function LoginPage() {
   const [adminRegistrationCode, setAdminRegistrationCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authenticatorCode, setAuthenticatorCode] = useState('');
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +28,7 @@ export function LoginPage() {
     setError(null);
     try {
       if (mode === 'signin') {
-        await signIn(email, password);
+        await signIn(email, password, authenticatorCode || undefined);
       } else {
         await register({
           firstName,
@@ -118,8 +119,8 @@ export function LoginPage() {
             ) : null}
           </>
         ) : null}
-        <label>
-          Password
+          <label>
+            Password
           <span className="password-field">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -138,7 +139,8 @@ export function LoginPage() {
               <span className={showPassword ? 'eye-icon visible' : 'eye-icon'} />
             </button>
           </span>
-        </label>
+          </label>
+          {error?.includes('authenticator') || error?.includes('six-digit') ? <label>Authenticator code<input inputMode="numeric" maxLength={6} value={authenticatorCode} onChange={(event) => setAuthenticatorCode(event.target.value.replace(/\D/g, ''))} placeholder="123456" /></label> : null}
         {error ? <p className="error">{error}</p> : null}
         <button disabled={isSigningIn} type="submit">
           {isSigningIn ? (mode === 'signin' ? 'Signing in…' : 'Creating account…') : mode === 'signin' ? 'Log in' : 'Sign up'}

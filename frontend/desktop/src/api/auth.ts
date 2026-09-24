@@ -1,10 +1,10 @@
 import { apiRequest } from './client';
 import { AuthResponse, User, UserRole } from '../types/api';
 
-export function login(email: string, password: string) {
+export function login(email: string, password: string, authenticatorCode?: string) {
   return apiRequest<AuthResponse>('/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, ...(authenticatorCode ? { authenticatorCode } : {}) }),
   });
 }
 

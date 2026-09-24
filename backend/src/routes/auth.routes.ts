@@ -1,6 +1,7 @@
 import { requestPasswordReset, resetPassword } from '../services/passwordReset.service.js';
 import { resetRateLimit } from '../middleware/resetRateLimit.js';
 import { forgotPasswordSchema, resetPasswordSchema } from '../schemas/auth.schema.js';
+import { authenticate } from '../middleware/authenticate.js';
 import { Router } from 'express';
 import * as authController from '../controllers/auth.controller.js';
 import { validateRequest } from '../middleware/validateRequest.js';
@@ -17,6 +18,8 @@ authRoutes.post('/register', validateRequest(registerSchema), authController.reg
 authRoutes.post('/login', validateRequest(loginSchema), authController.login);
 authRoutes.post('/refresh', validateRequest(refreshSchema), authController.refresh);
 authRoutes.post('/logout', validateRequest(logoutSchema), authController.logout);
+authRoutes.get('/mfa/setup', authenticate, authController.mfaSetup);
+authRoutes.post('/mfa/enable', authenticate, authController.mfaEnable);
 
 authRoutes.post(
   '/forgot-password',

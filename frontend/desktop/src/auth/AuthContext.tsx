@@ -6,7 +6,7 @@ type AuthContextValue = {
   user: User | null;
   accessToken: string | null;
   isSigningIn: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string, authenticatorCode?: string) => Promise<void>;
   register: (input: Parameters<typeof authApi.register>[0]) => Promise<void>;
   signOut: () => void;
 };
@@ -22,10 +22,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       user: session?.user ?? null,
       accessToken: session?.accessToken ?? null,
       isSigningIn,
-      async signIn(email, password) {
+      async signIn(email, password, authenticatorCode) {
         setIsSigningIn(true);
         try {
-          setSession(await authApi.login(email, password));
+          setSession(await authApi.login(email, password, authenticatorCode));
         } finally {
           setIsSigningIn(false);
         }
