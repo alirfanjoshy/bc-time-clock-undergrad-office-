@@ -22,6 +22,7 @@ export function generateMyTimesheetReport(
   input: {
     dateStart: string;
     dateEnd: string;
+    blank?: boolean;
   },
 ) {
   return apiBlob('/reports/my-timesheet', {
