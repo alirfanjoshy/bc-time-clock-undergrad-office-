@@ -36,7 +36,7 @@ export function CampusWelcome({ onLogIn, onSignUp }: Props) {
         <article><ClipboardList aria-hidden="true" /><h3>Stay on top of your time</h3><p>Review your shifts and download your timesheet reports.</p></article>
         <article><Users aria-hidden="true" /><h3>One connected team</h3><p>A shared workspace for recruitment employees and office administrators.</p></article>
       </section>
-      <footer className="campus-welcome-footer"><span>Brooklyn College</span><p>Undergraduate Recruitment Office · BC Time Clock</p></footer>
+      <footer className="campus-welcome-footer"><span>Brooklyn College</span><p>Undergraduate Recruitment Office · BC Time Clock<br /><a className="campus-privacy-link" href={`${import.meta.env.BASE_URL}privacy.html`}>Privacy Policy</a></p></footer>
     </main>
   );
 }

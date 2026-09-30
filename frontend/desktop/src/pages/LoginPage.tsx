@@ -148,6 +148,7 @@ export function LoginPage() {
         <button className="auth-back" type="button" disabled={isSigningIn} onClick={() => setForgot(true)}>Forgot password?</button>
         <small>
           Employee accounts can be created directly. Admin accounts require the office setup code.
+          {' '}<a href={`${import.meta.env.BASE_URL}privacy.html`}>Privacy Policy</a>
         </small>
       </form>
     </main>
