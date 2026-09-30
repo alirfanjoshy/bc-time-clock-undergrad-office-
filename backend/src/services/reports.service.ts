@@ -89,8 +89,8 @@ export async function generateMyTimesheetReport(
 ) {
   const start = startOfDay(new Date(input.dateStart));
   const end = endOfDay(new Date(input.dateEnd));
-  const entries = await listEntriesForRange(start, end, { userId });
-  const user = await findSafeUserById(userId);
+  const entries = input.blank ? [] : await listEntriesForRange(start, end, { userId });
+  const user = input.blank ? null : await findSafeUserById(userId);
   const pdf = await createTimesheetPdf({
     reportTitle: 'PERSONAL EMPLOYEE TIMESHEET',
     dateStart: start,
@@ -98,8 +98,9 @@ export async function generateMyTimesheetReport(
     entries,
     employeeName: user ? `${user.firstName} ${user.lastName}` : undefined,
     personal: true,
+    blank: input.blank,
   });
-  const fileName = `BC_URO_MY_TIMESHEET_${input.dateStart}_${input.dateEnd}.pdf`;
+  const fileName = `BC_URO_MY_TIMESHEET_${input.blank ? 'BLANK' : 'FILLED'}_${input.dateStart}_${input.dateEnd}.pdf`;
   const storageDir = path.resolve(process.cwd(), 'storage', 'reports');
   const storageKey = path.join(storageDir, fileName);
 
