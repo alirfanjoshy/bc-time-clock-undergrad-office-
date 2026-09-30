@@ -1179,6 +1179,39 @@ select {
   padding: 0 18px;
 }
 
+
+.timesheet-admin-controls,
+.timesheet-edit-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.timesheet-admin-controls select,
+.timesheet-admin-controls input,
+.timesheet-edit-panel input,
+.timesheet-edit-panel textarea {
+  min-height: 42px;
+  width: 100%;
+}
+
+.timesheet-edit-panel textarea {
+  min-height: 90px;
+  padding: 10px;
+  resize: vertical;
+}
+
+.timesheet-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.timesheet-edit-panel small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .employee-portal .time-clock-card > button {
   justify-self: start;
   min-width: 136px;
