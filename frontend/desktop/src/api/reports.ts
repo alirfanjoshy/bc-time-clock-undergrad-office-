@@ -31,3 +31,20 @@ export function generateMyTimesheetReport(
     body: JSON.stringify(input),
   });
 }
+
+
+export function generateEmployeeTimesheetReport(
+  accessToken: string,
+  input: {
+    employeeId: string;
+    dateStart: string;
+    dateEnd: string;
+    blank: boolean;
+  },
+) {
+  return apiBlob('/reports/generate', {
+    method: 'POST',
+    accessToken,
+    body: JSON.stringify({ ...input, type: 'CUSTOM' }),
+  });
+}
