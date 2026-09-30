@@ -26,7 +26,7 @@ export async function sendResetEmail(to: string, url: string) {
     text: `BC Time Clock\n\nOpen this link to choose a new password:\n${url}\n\nThis link expires in 15 minutes and can be used once. If you did not request a reset, ignore this email.`,
   };
   try {
-    if (env.RESEND_API_KEY) {
+    if (env.RESEND_API_KEY && !gmailApiConfigured()) {
       const result = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -36,7 +36,7 @@ export async function sendResetEmail(to: string, url: string) {
         body: JSON.stringify(message),
         signal: AbortSignal.timeout(10000),
       });
-      if (!result.ok) throw new Error('Email provider rejected the message');
+      if (!result.ok) throw new Error(`Resend email request failed (HTTP ${result.status})`);
     } else if (gmailApiConfigured()) {
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
@@ -49,7 +49,7 @@ export async function sendResetEmail(to: string, url: string) {
         }),
         signal: AbortSignal.timeout(10000),
       });
-      if (!tokenResponse.ok) throw new Error('Google did not authorize email delivery');
+      if (!tokenResponse.ok) throw new Error(`Google token refresh failed (HTTP ${tokenResponse.status})`);
       const tokenPayload: unknown = await tokenResponse.json();
       if (
         !tokenPayload ||
@@ -78,7 +78,7 @@ export async function sendResetEmail(to: string, url: string) {
         body: JSON.stringify({ raw }),
         signal: AbortSignal.timeout(10000),
       });
-      if (!result.ok) throw new Error('Gmail API rejected the message');
+      if (!result.ok) throw new Error(`Gmail send request failed (HTTP ${result.status})`);
     } else {
       const transport = nodemailer.createTransport({
         host: env.SMTP_HOST,
@@ -91,7 +91,11 @@ export async function sendResetEmail(to: string, url: string) {
       });
       await transport.sendMail(message);
     }
-  } catch {
+  } catch (error) {
+    console.error(
+      'Password reset email delivery failed',
+      error instanceof Error ? error.message : 'Unknown provider error',
+    );
     throw new AppError(
       503,
       'EMAIL_DELIVERY_FAILED',
