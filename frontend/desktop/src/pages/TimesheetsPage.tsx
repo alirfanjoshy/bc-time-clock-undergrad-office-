@@ -123,7 +123,7 @@ export function TimesheetsPage() {
   const selectedUser = users.find((user) => user.id === employeeId);
 
   return (
-    <div className="page">
+    <div className="page timesheet-admin-page">
       <header className="page-header">
         <div>
           <h1>Edit Employee Timesheet</h1>
@@ -132,7 +132,7 @@ export function TimesheetsPage() {
       </header>
 
       <section className="panel timesheet-admin-controls">
-        <div className="form-grid two">
+        <div className="timesheet-filter-fields">
           <label>
             Employee
             <select value={employeeId} onChange={(event) => { setEmployeeId(event.target.value); setEditing(null); }}>
@@ -145,13 +145,16 @@ export function TimesheetsPage() {
             <label>To<input type="date" value={dateEnd} onChange={(event) => setDateEnd(event.target.value)} /></label>
           </div>
         </div>
-        <div className="timesheet-pdf-actions">
-          <button type="button" disabled={!employeeId || dateEnd < dateStart || downloading !== null} onClick={() => void downloadTimesheet(false)}>
-            {downloading === 'filled' ? 'Making PDF…' : 'Download Filled PDF'}
-          </button>
-          <button type="button" disabled={!employeeId || dateEnd < dateStart || downloading !== null} onClick={() => void downloadTimesheet(true)}>
-            {downloading === 'blank' ? 'Making PDF…' : 'Download Blank Form'}
-          </button>
+        <div className="timesheet-download-group">
+          <span>PDF DOWNLOADS</span>
+          <div className="timesheet-pdf-actions">
+            <button type="button" disabled={!employeeId || dateEnd < dateStart || downloading !== null} onClick={() => void downloadTimesheet(false)}>
+              {downloading === 'filled' ? 'Making PDF…' : 'Download Filled PDF'}
+            </button>
+            <button type="button" className="secondary-button" disabled={!employeeId || dateEnd < dateStart || downloading !== null} onClick={() => void downloadTimesheet(true)}>
+              {downloading === 'blank' ? 'Making PDF…' : 'Download Blank Form'}
+            </button>
+          </div>
         </div>
       </section>
 
@@ -160,11 +163,12 @@ export function TimesheetsPage() {
       {!users.length && !error ? <EmptyState title="No employees found" /> : null}
 
       {selectedUser ? (
-        <section className="panel">
+        <section className="panel timesheet-entry-panel">
           <header className="panel-heading">
-            <div><h2>{selectedUser.firstName} {selectedUser.lastName}</h2><p>{selectedUser.employeeId} · {dateStart} to {dateEnd}</p></div>
+            <div><span className="timesheet-section-label">TIME ENTRIES</span><h2>{selectedUser.firstName} {selectedUser.lastName}</h2><p>{selectedUser.employeeId} · {dateStart} to {dateEnd}</p></div>
           </header>
           {loading ? <p>Loading timesheet…</p> : null}
+          <div className="timesheet-table-wrap">
           <table>
             <thead><tr><th>Work Date</th><th>Clock In</th><th>Clock Out</th><th>Status</th><th>Total</th><th>Action</th></tr></thead>
             <tbody>
@@ -180,6 +184,7 @@ export function TimesheetsPage() {
               ))}
             </tbody>
           </table>
+          </div>
           {!entries.length && !loading ? <EmptyState title="No time entries for these dates" /> : null}
         </section>
       ) : null}
@@ -187,11 +192,11 @@ export function TimesheetsPage() {
       {editing ? (
         <section className="panel timesheet-edit-panel">
           <header className="panel-heading"><div><h2>Correct this shift</h2><p>Employee: {editing.user ? `${editing.user.firstName} ${editing.user.lastName}` : selectedUser?.firstName}</p></div></header>
-          <form className="form-grid two" onSubmit={(event) => void saveEdit(event)}>
+          <form className="form-grid two timesheet-edit-form" onSubmit={(event) => void saveEdit(event)}>
             <label>Work date<input required type="date" value={workDateValue} onChange={(event) => setWorkDateValue(event.target.value)} /></label>
             <label>Clock in<input required type="datetime-local" value={clockInValue} onChange={(event) => setClockInValue(event.target.value)} /></label>
             <label>Clock out<input type="datetime-local" value={clockOutValue} onChange={(event) => setClockOutValue(event.target.value)} /><small>Leave empty only if the employee is still working.</small></label>
-            <label>Reason for this change<textarea required minLength={3} maxLength={500} value={editReason} onChange={(event) => setEditReason(event.target.value)} placeholder="Example: Employee forgot to clock out; supervisor confirmed 5:00 PM." /></label>
+            <label className="timesheet-reason-field">Reason for this change<textarea required minLength={3} maxLength={500} value={editReason} onChange={(event) => setEditReason(event.target.value)} placeholder="Example: Employee forgot to clock out; supervisor confirmed 5:00 PM." /></label>
             <div className="timesheet-edit-actions">
               <button type="submit" disabled={saving || !editReason.trim()}>{saving ? 'Saving…' : 'Save timesheet correction'}</button>
               <button type="button" className="secondary-button" disabled={saving} onClick={() => setEditing(null)}>Cancel</button>
