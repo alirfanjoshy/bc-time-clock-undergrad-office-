@@ -1,4 +1,4 @@
-import { AuditAction } from '@prisma/client';
+import { AuditAction, TimeEntryStatus } from '@prisma/client';
 import { prisma } from '../config/prisma.js';
 import { CreateUserInput } from '../schemas/admin.schema.js';
 import { AppError } from '../utils/errors.js';
@@ -6,7 +6,7 @@ import { hashPassword } from '../utils/password.js';
 import { createUser, findDepartmentById, findSafeUsers } from '../repositories/user.repository.js';
 import { recordAuditLog } from './audit.service.js';
 import { endOfDay, formatMinutes, minutesBetween, startOfDay } from '../utils/dates.js';
-import { AdminEntriesQuery } from '../schemas/adminTime.schema.js';
+import { AdminEntriesQuery, AdminTimeEntryUpdateInput } from '../schemas/adminTime.schema.js';
 
 export function listUsers() {
   return findSafeUsers();
@@ -144,6 +144,73 @@ export function listTimeEntries(query: AdminEntriesQuery) {
     },
     orderBy: { clockIn: 'desc' },
   });
+}
+
+export async function updateTimeEntryAsAdmin(
+  entryId: string,
+  input: AdminTimeEntryUpdateInput,
+  actorUserId: string,
+  ipAddress?: string,
+) {
+  const existing = await prisma.timeEntry.findUnique({
+    where: { id: entryId },
+    include: { user: { select: { id: true, firstName: true, lastName: true } } },
+  });
+  if (!existing) throw new AppError(404, 'TIME_ENTRY_NOT_FOUND', 'Time entry was not found.');
+
+  const clockIn = new Date(input.clockIn);
+  const clockOut = input.clockOut ? new Date(input.clockOut) : null;
+  if (!clockOut) {
+    const otherOpenEntry = await prisma.timeEntry.findFirst({
+      where: { userId: existing.userId, clockOut: null, id: { not: entryId } },
+      select: { id: true },
+    });
+    if (otherOpenEntry) {
+      throw new AppError(409, 'EMPLOYEE_ALREADY_CLOCKED_IN', 'This employee already has another open shift.');
+    }
+  }
+
+  const updated = await prisma.timeEntry.update({
+    where: { id: entryId },
+    data: {
+      workDate: new Date(`${input.workDate}T00:00:00.000Z`),
+      clockIn,
+      clockOut,
+      totalMinutes: clockOut ? minutesBetween(clockIn, clockOut) : null,
+      status: clockOut ? TimeEntryStatus.EDITED : TimeEntryStatus.CLOCKED_IN,
+      editedBy: actorUserId,
+      editReason: input.editReason,
+    },
+    include: {
+      user: { select: { id: true, firstName: true, lastName: true, email: true, employeeId: true } },
+    },
+  });
+
+  await recordAuditLog({
+    actorUserId,
+    targetUserId: existing.userId,
+    targetEntityType: 'TimeEntry',
+    targetEntityId: existing.id,
+    action: AuditAction.TIME_ENTRY_EDITED,
+    metadata: {
+      reason: input.editReason,
+      before: {
+        workDate: existing.workDate.toISOString(),
+        clockIn: existing.clockIn.toISOString(),
+        clockOut: existing.clockOut?.toISOString() ?? null,
+        totalMinutes: existing.totalMinutes,
+      },
+      after: {
+        workDate: updated.workDate.toISOString(),
+        clockIn: updated.clockIn.toISOString(),
+        clockOut: updated.clockOut?.toISOString() ?? null,
+        totalMinutes: updated.totalMinutes,
+      },
+    },
+    ipAddress,
+  });
+
+  return updated;
 }
 
 export function listAuditLogs() {
