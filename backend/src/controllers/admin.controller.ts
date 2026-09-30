@@ -5,6 +5,7 @@ import {
   listAuditLogs,
   listTimeEntries,
   listUsers,
+  updateTimeEntryAsAdmin,
 } from '../services/admin.service.js';
 
 export async function getUsers(_req: Request, res: Response) {
@@ -25,6 +26,12 @@ export async function getDashboard(_req: Request, res: Response) {
 export async function getTimeEntries(req: Request, res: Response) {
   const entries = await listTimeEntries(req.query as never);
   res.json({ data: entries });
+}
+
+export async function updateTimeEntry(req: Request, res: Response) {
+  const entryId = Array.isArray(req.params.entryId) ? req.params.entryId[0] : req.params.entryId;
+  const entry = await updateTimeEntryAsAdmin(entryId, req.body, req.user!.id, req.ip);
+  res.json({ data: entry });
 }
 
 export async function getAuditLogs(_req: Request, res: Response) {
