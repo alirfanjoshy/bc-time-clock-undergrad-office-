@@ -1528,6 +1528,8 @@ button { background: var(--maroon); font-weight: 700; }
 .mobile-week-total { padding: 20px; display: grid; gap: 4px; text-align: center; border-radius: 8px; background: #fbedf2; color: var(--maroon); }
 .mobile-week-total strong { font-size: 28px; }
 .mobile-week-total span { font-size: 14px; font-weight: 700; }
+.timesheet-pdf-actions { display: grid; gap: 8px; }
+.timesheet-pdf-actions button { width: 100%; }
 .mobile-report { margin-top: 24px; font-size: 14px; }
 .mobile-report summary { cursor: pointer; color: var(--maroon); padding: 12px 0; }
 .mobile-report .form-grid { margin: 12px 0; }
