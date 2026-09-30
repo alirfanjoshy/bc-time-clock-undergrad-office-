@@ -31,3 +31,9 @@ services:
         value: https://bc-time-clock.onrender.com/
       - key: RESEND_API_KEY
         sync: false
+      - key: GMAIL_CLIENT_ID
+        sync: false
+      - key: GMAIL_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REFRESH_TOKEN
+        sync: false

@@ -2,11 +2,14 @@ import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
 import { AppError } from '../utils/errors.js';
 
+const gmailApiConfigured = () =>
+  !!(env.GMAIL_CLIENT_ID && env.GMAIL_CLIENT_SECRET && env.GMAIL_REFRESH_TOKEN);
+
 export function assertMailConfigured() {
   if (
     !env.MAIL_FROM ||
     !env.PASSWORD_RESET_URL ||
-    !(env.RESEND_API_KEY || (env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASSWORD))
+    !(env.RESEND_API_KEY || gmailApiConfigured() || (env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASSWORD))
   ) {
     throw new AppError(
       503,
@@ -34,6 +37,48 @@ export async function sendResetEmail(to: string, url: string) {
         signal: AbortSignal.timeout(10000),
       });
       if (!result.ok) throw new Error('Email provider rejected the message');
+    } else if (gmailApiConfigured()) {
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: env.GMAIL_CLIENT_ID!,
+          client_secret: env.GMAIL_CLIENT_SECRET!,
+          refresh_token: env.GMAIL_REFRESH_TOKEN!,
+          grant_type: 'refresh_token',
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!tokenResponse.ok) throw new Error('Google did not authorize email delivery');
+      const tokenPayload: unknown = await tokenResponse.json();
+      if (
+        !tokenPayload ||
+        typeof tokenPayload !== 'object' ||
+        !('access_token' in tokenPayload) ||
+        typeof tokenPayload.access_token !== 'string'
+      ) throw new Error('Google did not return an access token');
+
+      const rawMessage = [
+        `From: ${env.MAIL_FROM}`,
+        `To: ${to}`,
+        'Subject: Reset your BC Time Clock password',
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        '',
+        message.text,
+      ].join('\r\n');
+      const raw = Buffer.from(rawMessage, 'utf8').toString('base64url');
+      const result = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${tokenPayload.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ raw }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!result.ok) throw new Error('Gmail API rejected the message');
     } else {
       const transport = nodemailer.createTransport({
         host: env.SMTP_HOST,
