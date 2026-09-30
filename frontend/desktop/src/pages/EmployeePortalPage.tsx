@@ -72,7 +72,7 @@ export function EmployeePortalPage() {
   const weekStart = new Date();
   weekStart.setHours(0, 0, 0, 0);
   weekStart.setDate(
-    weekStart.getDate() - ((weekStart.getDay() + 6) % 7) + weekOffset * 7,
+    weekStart.getDate() - weekStart.getDay() + weekOffset * 7,
   );
   const days = Array.from({ length: 7 }, (_, index) => {
     const day = new Date(weekStart);
@@ -98,7 +98,7 @@ export function EmployeePortalPage() {
   useEffect(() => {
     void loadEntries();
   }, [loadEntries, tab]);
-  async function printTimesheet() {
+  async function printTimesheet(blank = false) {
     if (!accessToken || sharing) return;
     setSharing(true);
     setError("");
@@ -106,6 +106,7 @@ export function EmployeePortalPage() {
       const report = await generateMyTimesheetReport(accessToken, {
         dateStart,
         dateEnd,
+        blank,
       });
       const url = URL.createObjectURL(report.blob);
       const link = document.createElement("a");
@@ -436,12 +437,20 @@ export function EmployeePortalPage() {
                     />
                   </label>
                 </div>
-                <button
-                  disabled={sharing || dateEnd < dateStart}
-                  onClick={() => void printTimesheet()}
-                >
-                  {sharing ? "Generating..." : "Download PDF"}
-                </button>
+                <div className="timesheet-pdf-actions">
+                  <button
+                    disabled={sharing || dateEnd < dateStart}
+                    onClick={() => void printTimesheet(false)}
+                  >
+                    {sharing ? "Generating..." : "Download Filled PDF"}
+                  </button>
+                  <button
+                    disabled={sharing || dateEnd < dateStart}
+                    onClick={() => void printTimesheet(true)}
+                  >
+                    {sharing ? "Generating..." : "Download Blank Form"}
+                  </button>
+                </div>
               </details>
             </aside>
           </section>
