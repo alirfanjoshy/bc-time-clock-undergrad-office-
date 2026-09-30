@@ -1605,3 +1605,102 @@ button { background: var(--maroon); font-weight: 700; }
 .login-card { width: min(100% - 32px, 440px); }
 .login-card h2 { letter-spacing: -.8px; }
 .login-card input:focus, .login-card select:focus { border-color: var(--maroon); box-shadow: 0 0 0 4px rgba(152,13,56,.1); outline: none; }
+
+/* Admin timesheet editor and report workspace spacing */
+.timesheet-admin-page {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+.timesheet-admin-page .page-header {
+  margin: 16px 0 0;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(16, 24, 32, .05);
+}
+.timesheet-admin-page .page-header p { max-width: 760px; line-height: 1.65; }
+.timesheet-admin-page > .panel,
+.timesheet-admin-page > .auth-success {
+  margin: 0;
+  border: 1px solid #e2e7ed;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(16, 24, 32, .045);
+}
+.timesheet-admin-controls {
+  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, auto);
+  gap: 28px;
+  padding: 24px;
+}
+.timesheet-filter-fields { display: grid; grid-template-columns: minmax(220px, 1.15fr) minmax(260px, 1fr); align-items: end; gap: 20px; }
+.timesheet-filter-fields input,
+.timesheet-filter-fields select,
+.timesheet-edit-panel input,
+.timesheet-edit-panel textarea { background: #fff; border-color: #d6dde5; border-radius: 8px; }
+.timesheet-download-group { display: grid; gap: 9px; }
+.timesheet-download-group > span,
+.timesheet-section-label { color: #788493; font-size: 10px; font-weight: 850; letter-spacing: 1.1px; }
+.timesheet-admin-page .timesheet-pdf-actions { grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: 9px; }
+.timesheet-admin-page .timesheet-pdf-actions button,
+.timesheet-edit-actions button { min-height: 44px; border-radius: 8px; padding: 0 14px; }
+.timesheet-admin-page .timesheet-pdf-actions .secondary-button,
+.timesheet-edit-actions .secondary-button { background: #fff; border: 1px solid #cbd3dc; color: #354052; }
+.timesheet-entry-panel { overflow: hidden; padding: 0; }
+.timesheet-entry-panel .panel-heading { margin: 0; padding: 22px 24px; border-bottom: 1px solid #edf0f3; }
+.timesheet-entry-panel .panel-heading h2 { margin-top: 5px; font-size: 20px; }
+.timesheet-entry-panel .panel-heading p { color: #718091; font-size: 12px; margin-top: 5px; }
+.timesheet-entry-panel > p { margin: 16px 24px; }
+.timesheet-table-wrap { overflow-x: auto; }
+.timesheet-table-wrap table { min-width: 760px; }
+.timesheet-table-wrap thead { background: #f6f8fa; }
+.timesheet-table-wrap th { padding-top: 14px; padding-bottom: 14px; color: #667383; font-size: 10px; letter-spacing: .6px; }
+.timesheet-table-wrap td { padding-top: 14px; padding-bottom: 14px; }
+.timesheet-table-wrap tbody tr:hover { background: #fbfcfd; }
+.timesheet-admin-page .badge.warning { background: #fff3d8; color: #92620b; }
+.timesheet-admin-page .badge.success { background: #e7f5ec; color: #247447; }
+.timesheet-admin-page table button { min-height: 34px; padding: 0 14px; border-radius: 7px; }
+.timesheet-entry-panel > .empty-state { margin: 16px 24px 22px; padding: 16px; }
+.timesheet-edit-panel { gap: 18px; padding: 24px; }
+.timesheet-edit-panel .panel-heading { margin: 0; }
+.timesheet-edit-panel .panel-heading p { color: #718091; font-size: 13px; margin-top: 5px; }
+.timesheet-edit-form { gap: 18px 20px; }
+.timesheet-edit-form textarea { min-height: 104px; padding: 12px; resize: vertical; }
+.timesheet-reason-field { grid-column: 1 / -1; }
+.timesheet-edit-actions { grid-column: 1 / -1; padding-top: 2px; }
+.timesheet-admin-page > .auth-success { padding: 14px 18px; }
+
+.report-workspace { align-items: stretch; gap: 22px; }
+.report-form { align-content: start; gap: 16px; padding: 24px; border-radius: 12px; }
+.report-form-heading { display: flex; align-items: center; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid #edf0f3; }
+.report-form-heading h2 { font-size: 18px; margin: 0; }
+.report-form-heading p { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 4px; }
+.report-icon,.pdf-preview-icon { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; border-radius: 11px; background: #f8eaf0; color: var(--maroon); }
+.report-form-note { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.report-form .report-save-button { background: white; border: 1px solid #cbd3dc; color: #354052; }
+.pdf-preview { display: grid; place-items: center; min-height: 650px; border-radius: 12px; background: linear-gradient(145deg, #f5f7fa, #eef1f5); border-color: #e0e5eb; }
+.pdf-preview.has-report { display: block; background: #252d36; border-color: #252d36; }
+.pdf-preview-empty { display: grid; justify-items: center; gap: 13px; max-width: 530px; padding: 48px 38px; color: #273244; text-align: center; }
+.pdf-preview-icon { width: 56px; height: 56px; flex-basis: 56px; border-radius: 16px; }
+.pdf-preview-empty h2 { font-size: 21px; margin: 0; }
+.pdf-preview-empty > p { color: #697787; font-size: 14px; line-height: 1.7; margin: 0; }
+.pdf-preview-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; margin-top: 10px; }
+.pdf-preview-steps span { display: grid; justify-items: center; gap: 8px; padding: 13px 8px; border: 1px solid #e0e5eb; border-radius: 9px; background: rgba(255,255,255,.75); color: #566373; font-size: 11px; }
+.pdf-preview-steps b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #f8eaf0; color: var(--maroon); }
+@media (max-width: 900px) {
+  .timesheet-admin-controls { grid-template-columns: 1fr; gap: 22px; }
+  .timesheet-filter-fields { grid-template-columns: 1fr; }
+  .timesheet-admin-page .timesheet-pdf-actions { grid-template-columns: 1fr 1fr; }
+  .pdf-preview { min-height: 430px; }
+}
+@media (max-width: 560px) {
+  .timesheet-admin-page { gap: 14px; }
+  .timesheet-admin-page .page-header,
+  .timesheet-admin-controls,
+  .timesheet-edit-panel { padding: 18px; }
+  .timesheet-admin-page .page-header h1 { font-size: 24px; }
+  .timesheet-admin-page .timesheet-pdf-actions { grid-template-columns: 1fr; }
+  .timesheet-edit-form { grid-template-columns: 1fr; }
+  .timesheet-reason-field,.timesheet-edit-actions { grid-column: 1; }
+  .pdf-preview-steps { grid-template-columns: 1fr; }
+  .pdf-preview-steps span { grid-template-columns: 24px 1fr; justify-items: start; align-items: center; text-align: left; }
+}
