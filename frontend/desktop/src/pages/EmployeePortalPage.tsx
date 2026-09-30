@@ -150,7 +150,7 @@ export function EmployeePortalPage() {
         { key: "employees" as Tab, label: "Employees", icon: Users },
         {
           key: "team-timesheets" as Tab,
-          label: "Team Timesheets",
+          label: "Edit Timesheets",
           icon: CalendarDays,
         },
         { key: "reports" as Tab, label: "Reports", icon: FileText },
@@ -522,7 +522,7 @@ export function EmployeePortalPage() {
               aria-pressed={tab === "team-timesheets"}
             >
               <ClipboardList size={16} />
-              Team Timesheets
+              Edit Timesheets
             </button>
             <button
               onClick={() => setTab("audit")}
