@@ -38,6 +38,7 @@ export const myTimesheetReportSchema = z.object({
     .object({
       dateStart: z.string().date(),
       dateEnd: z.string().date(),
+      blank: z.boolean().optional(),
     })
     .refine((value) => new Date(value.dateStart) <= new Date(value.dateEnd), {
       message: 'dateStart must be before or equal to dateEnd.',
@@ -52,6 +53,7 @@ export const myTimesheetReportQuerySchema = z.object({
     .object({
       dateStart: z.string().date(),
       dateEnd: z.string().date(),
+      blank: z.enum(['true', 'false']).transform((value) => value === 'true').optional(),
     })
     .refine((value) => new Date(value.dateStart) <= new Date(value.dateEnd), {
       message: 'dateStart must be before or equal to dateEnd.',
