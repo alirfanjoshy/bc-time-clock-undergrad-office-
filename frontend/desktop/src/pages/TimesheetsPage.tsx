@@ -1,4 +1,5 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ApiError } from '../api/client';
 import { generateEmployeeTimesheetReport } from '../api/reports';
 import { getTimeEntries, getUsers, updateTimeEntry } from '../api/admin';
 import { useAuth } from '../auth/AuthContext';
@@ -27,6 +28,9 @@ export function TimesheetsPage() {
   const [clockOutValue, setClockOutValue] = useState('');
   const [workDateValue, setWorkDateValue] = useState('');
   const [editReason, setEditReason] = useState('');
+  const [editError, setEditError] = useState<string | null>(null);
+  const editorRef = useRef<HTMLElement>(null);
+  const clockInRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState<'filled' | 'blank' | null>(null);
@@ -64,33 +68,58 @@ export function TimesheetsPage() {
     void loadEntries();
   }, [loadEntries]);
 
+  useEffect(() => {
+    if (editing) {
+      editorRef.current?.scrollIntoView({ block: 'center' });
+      clockInRef.current?.focus({ preventScroll: true });
+    }
+  }, [editing]);
+
   function beginEdit(entry: TimeEntry) {
     setEditing(entry);
     setClockInValue(toDateTimeInput(entry.clockIn));
     setClockOutValue(entry.clockOut ? toDateTimeInput(entry.clockOut) : '');
     setWorkDateValue(entry.workDate.slice(0, 10));
     setEditReason('');
+    setEditError(null);
     setMessage('');
   }
 
   async function saveEdit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!accessToken || !editing) return;
+    if (!accessToken || !editing || saving) return;
+    const clockIn = new Date(clockInValue === toDateTimeInput(editing.clockIn) ? editing.clockIn : clockInValue);
+    const clockOut = clockOutValue
+      ? new Date(editing.clockOut && clockOutValue === toDateTimeInput(editing.clockOut) ? editing.clockOut : clockOutValue)
+      : null;
+    if (!Number.isFinite(clockIn.getTime()) || (clockOut && !Number.isFinite(clockOut.getTime()))) {
+      setEditError('Enter a valid clock-in and clock-out date and time.');
+      return;
+    }
+    if (clockOut && clockOut <= clockIn) {
+      setEditError('Clock out must be after clock in. For an overnight shift, choose the next date for clock out.');
+      return;
+    }
+    if (editReason.trim().length < 3) {
+      setEditError('Enter a reason of at least 3 characters for this correction.');
+      return;
+    }
     setSaving(true);
+    setEditError(null);
     setError(null);
     setMessage('');
     try {
       await updateTimeEntry(accessToken, editing.id, {
         workDate: workDateValue,
-        clockIn: new Date(clockInValue).toISOString(),
-        clockOut: clockOutValue ? new Date(clockOutValue).toISOString() : null,
+        clockIn: clockIn.toISOString(),
+        clockOut: clockOut?.toISOString() ?? null,
         editReason: editReason.trim(),
       });
       setEditing(null);
       setMessage('Timesheet updated. The change was recorded in the audit log.');
       await loadEntries();
-    } catch {
-      setError('Unable to save the change. Check that clock-out is after clock-in and try again.');
+    } catch (error) {
+      setEditError(error instanceof ApiError ? error.message : 'Unable to save the change. Check your connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -179,7 +208,7 @@ export function TimesheetsPage() {
                   <td>{entry.clockOut ? formatTime(entry.clockOut) : 'Not clocked out'}</td>
                   <td><span className={`badge ${entry.clockOut ? 'success' : 'warning'}`}>{entry.clockOut ? entry.status : 'OPEN SHIFT'}</span></td>
                   <td>{entry.totalMinutes == null ? 'In progress' : formatMinutes(entry.totalMinutes)}</td>
-                  <td><button type="button" onClick={() => beginEdit(entry)}>Edit</button></td>
+                  <td><button type="button" disabled={saving} aria-controls="timesheet-editor" aria-expanded={editing?.id === entry.id} onClick={() => beginEdit(entry)}>Edit</button></td>
                 </tr>
               ))}
             </tbody>
@@ -190,15 +219,16 @@ export function TimesheetsPage() {
       ) : null}
 
       {editing ? (
-        <section className="panel timesheet-edit-panel">
+        <section id="timesheet-editor" ref={editorRef} className="panel timesheet-edit-panel">
           <header className="panel-heading"><div><h2>Correct this shift</h2><p>Employee: {editing.user ? `${editing.user.firstName} ${editing.user.lastName}` : selectedUser?.firstName}</p></div></header>
           <form className="form-grid two timesheet-edit-form" onSubmit={(event) => void saveEdit(event)}>
             <label>Work date<input required type="date" value={workDateValue} onChange={(event) => setWorkDateValue(event.target.value)} /></label>
-            <label>Clock in<input required type="datetime-local" value={clockInValue} onChange={(event) => setClockInValue(event.target.value)} /></label>
+            <label>Clock in<input ref={clockInRef} required type="datetime-local" value={clockInValue} onChange={(event) => setClockInValue(event.target.value)} /></label>
             <label>Clock out<input type="datetime-local" value={clockOutValue} onChange={(event) => setClockOutValue(event.target.value)} /><small>Leave empty only if the employee is still working.</small></label>
-            <label className="timesheet-reason-field">Reason for this change<textarea required minLength={3} maxLength={500} value={editReason} onChange={(event) => setEditReason(event.target.value)} placeholder="Example: Employee forgot to clock out; supervisor confirmed 5:00 PM." /></label>
+            <label className="timesheet-reason-field">Reason for this change (required)<textarea required minLength={3} maxLength={500} value={editReason} onChange={(event) => setEditReason(event.target.value)} placeholder="Example: Employee forgot to clock out; supervisor confirmed 5:00 PM." /></label>
+            {editError ? <p className="timesheet-reason-field" role="alert">{editError}</p> : null}
             <div className="timesheet-edit-actions">
-              <button type="submit" disabled={saving || !editReason.trim()}>{saving ? 'Saving…' : 'Save timesheet correction'}</button>
+              <button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save timesheet correction'}</button>
               <button type="button" className="secondary-button" disabled={saving} onClick={() => setEditing(null)}>Cancel</button>
             </div>
           </form>
