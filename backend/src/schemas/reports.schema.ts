@@ -8,6 +8,8 @@ export const generateReportSchema = z.object({
       dateStart: z.string().date(),
       dateEnd: z.string().date(),
       departmentId: z.string().uuid().optional(),
+      employeeId: z.string().uuid().optional(),
+      blank: z.boolean().optional(),
       supervisorName: z.string().trim().max(120).optional(),
     })
     .refine((value) => new Date(value.dateStart) <= new Date(value.dateEnd), {
