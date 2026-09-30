@@ -8,6 +8,7 @@ import { addDays, endOfDay, endOfMonth, startOfDay, startOfMonth, startOfWeek } 
 import { createTimesheetPdf } from './pdf.service.js';
 import { recordAuditLog } from './audit.service.js';
 import { findSafeUserById } from '../repositories/user.repository.js';
+import { AppError } from '../utils/errors.js';
 
 function resolveRange(input: GenerateReportInput) {
   const requestedStart = startOfDay(new Date(input.dateStart));
@@ -37,16 +38,29 @@ function reportTitle(type: ReportType) {
 
 export async function generateReport(input: GenerateReportInput, actorUserId: string, ipAddress?: string) {
   const { start, end } = resolveRange(input);
-  const entries = await listEntriesForRange(start, end, { departmentId: input.departmentId });
-  const title = reportTitle(input.type);
+  const employee = input.employeeId ? await findSafeUserById(input.employeeId) : null;
+  if (input.employeeId && !employee) {
+    throw new AppError(404, 'EMPLOYEE_NOT_FOUND', 'Employee was not found.');
+  }
+  const entries = input.blank
+    ? []
+    : await listEntriesForRange(start, end, {
+        ...(input.departmentId && !input.employeeId ? { departmentId: input.departmentId } : {}),
+        ...(input.employeeId ? { userId: input.employeeId } : {}),
+      });
+  const title = employee ? 'INDIVIDUAL EMPLOYEE TIMESHEET' : reportTitle(input.type);
   const pdf = await createTimesheetPdf({
     reportTitle: title,
     dateStart: start,
     dateEnd: end,
     entries,
+    employeeName: employee && !input.blank ? `${employee.firstName} ${employee.lastName}` : undefined,
+    blank: input.blank ?? false,
     supervisorName: input.supervisorName,
   });
-  const fileName = `BC_URO_${input.type}_${input.dateStart}_${input.dateEnd}.pdf`;
+  const fileName = employee
+    ? `BC_URO_EMPLOYEE_${input.employeeId}_${input.blank ? 'BLANK' : 'FILLED'}_${input.dateStart}_${input.dateEnd}.pdf`
+    : `BC_URO_${input.type}_${input.dateStart}_${input.dateEnd}.pdf`;
   const storageDir = path.resolve(process.cwd(), 'storage', 'reports');
   const storageKey = path.join(storageDir, fileName);
 
@@ -57,7 +71,7 @@ export async function generateReport(input: GenerateReportInput, actorUserId: st
     data: {
       type: input.type,
       generatedBy: actorUserId,
-      departmentId: input.departmentId,
+      departmentId: employee?.departmentId ?? input.departmentId,
       dateStart: start,
       dateEnd: end,
       fileName,
@@ -67,11 +81,14 @@ export async function generateReport(input: GenerateReportInput, actorUserId: st
 
   await recordAuditLog({
     actorUserId,
+    targetUserId: input.employeeId,
     targetEntityType: 'ReportExport',
     targetEntityId: exportRecord.id,
     action: AuditAction.REPORT_GENERATED,
     metadata: {
       type: input.type,
+      employeeId: input.employeeId,
+      blank: input.blank ?? false,
       dateStart: start.toISOString(),
       dateEnd: end.toISOString(),
       fileName,
